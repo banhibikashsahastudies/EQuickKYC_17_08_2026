@@ -16,5 +16,9 @@ namespace EQuickKYC.Application.Interfaces
         Task<UserResponse> UpdateUser(UpdateUserRequest request);
 
         Task<bool> DeleteUser(DeleteUserRequest request);
+
+        //pagination
+        Task<UserPaginationResponse> GetUsers(int page,int pageSize);
+
     }
 }

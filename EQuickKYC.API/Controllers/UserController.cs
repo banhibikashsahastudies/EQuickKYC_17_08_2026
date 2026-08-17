@@ -83,5 +83,12 @@ namespace EQuickKYC.API.Controllers
 
             return await _userService.DeleteUser(request);
         }
+
+        // Pagination api/User/GetUsersByPagination
+        [HttpGet("[action]")]
+        public async Task<ActionResult<UserPaginationResponse>> GetUsersByPagination([FromQuery] int page = 1, [FromQuery] int pageSize = 100)
+        {
+            return Ok(await _userService.GetUsers(page, pageSize));
+        }
     }
 }

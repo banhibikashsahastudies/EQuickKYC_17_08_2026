@@ -83,7 +83,7 @@ namespace EQuickKYC.Infrastructure.Services
 
         public async Task<List<UserResponse>> GetAllUser()
         {
-            var users = await _dbContext.Users.Include(x => x.Address).Include(x => x.Card).ToListAsync();
+            var users = await _dbContext.Users.Where(x => !x.IsDeleted).Include(x => x.Address).Include(x => x.Card).ToListAsync();
 
             return users.Select(x => ToUserResponse(x)).ToList();
         }
@@ -169,6 +169,43 @@ namespace EQuickKYC.Infrastructure.Services
 
                 // Don't expose soft-delete status
                 IsDeleted = null
+            };
+        }
+
+        public async Task<UserPaginationResponse> GetUsers(int page, int pageSize)
+        {
+            if (page <= 0) page = 1;
+            if (pageSize <= 0) pageSize = 100;
+
+            var query = _dbContext.Users.AsNoTracking().Where(x => !x.IsDeleted).OrderBy(x => x.CreatedOn);
+
+            var totalRecords = await query.CountAsync();
+
+            var users = await query.Skip((page - 1) * pageSize).Take(pageSize).Select(x => new UserResponse
+            {
+                Id = x.Id,
+                FirstName = x.FirstName,
+                MiddleName = x.MiddleName,
+                LastName = x.LastName,
+                Dob = x.Dob,
+                Gender = x.Gender,
+                AddressId = x.AddressId,
+                Address = x.Address,
+                Mobile = x.Mobile,
+                Email = x.Email
+            }).ToListAsync();
+
+            var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+            return new UserPaginationResponse
+            {
+                Users = users,
+                Page = page,
+                PageSize = pageSize,
+                TotalRecords = totalRecords,
+                TotalPages = totalPages,
+                HasPreviousPage = page > 1,
+                HasNextPage = page < totalPages
             };
         }
     }
