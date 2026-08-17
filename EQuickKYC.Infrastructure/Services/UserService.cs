@@ -70,7 +70,12 @@ namespace EQuickKYC.Infrastructure.Services
                 Mobile = user.Mobile,
                 Email = user.Email,
                 CreatedOn = user.CreatedOn,
-                Address = user.Address
+                Address = user.Address,
+
+                //these may be removed later
+                Card = user.Card,
+                CardId = user.CardId,
+                AddressId= user.AddressId
             };
 
             //save failed returning null
