@@ -16,6 +16,24 @@ namespace EQuickKYC.Infrastructure.Services
 
         public async Task<UserResponse> AddUser(AddUserRequest request)
         {
+            Card card = new Card() 
+            {
+                CardId = Guid.NewGuid(),
+                AadhaarNo = request.CardRequest.AadhaarNo,
+                PanNo = request.CardRequest.PanNo,
+                VoterNo = request.CardRequest.VoterNo,
+                DrivingLicenseNo = request.CardRequest.DrivingLicenseNo
+            };
+
+            Address address = new Address()
+            {
+                AddressId = Guid.NewGuid(),
+                Country = request.AddressRequest.Country,
+                State = request.AddressRequest.State,
+                City = request.AddressRequest.City,
+                ZipCode = request.AddressRequest.ZipCode
+            };
+
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -25,20 +43,14 @@ namespace EQuickKYC.Infrastructure.Services
                 LastName = request.LastName,
                 Dob = request.Dob,
                 Gender = request.Gender,
-
+                AddressId = address.AddressId,
+                CardId = card.CardId,
                 Mobile = request.Mobile,
                 Email = request.Email,
-
                 CreatedOn = DateTime.UtcNow,
-
-                Address = request.Address
+                Card = card,
+                Address = address
             };
-
-            if (request.Address != null)
-            {
-                request.Address.AddressId = Guid.NewGuid();
-                user.AddressId = request.Address.AddressId;
-            }
 
             _dbContext.Users.Add(user);
 

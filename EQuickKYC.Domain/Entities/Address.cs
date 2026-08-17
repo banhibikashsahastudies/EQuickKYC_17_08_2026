@@ -6,7 +6,7 @@ namespace EQuickKYC.Domain.Entities
 {
     public class Address
     {
-        public Guid? AddressId { get; set; }
+        public Guid AddressId { get; set; }
 
         public string? Country { get; set; }
 

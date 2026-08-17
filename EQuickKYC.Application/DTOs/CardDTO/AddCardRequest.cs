@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace EQuickKYC.Domain.Entities
+namespace EQuickKYC.Application.DTOs.CardDTO
 {
-    public class Card
+    public class AddCardRequest
     {
-        public Guid CardId { get; set; }
-
-        public string? AadhaarNo {  get; set; }
+        public string? AadhaarNo { get; set; }
 
         public string? PanNo { get; set; }
 
