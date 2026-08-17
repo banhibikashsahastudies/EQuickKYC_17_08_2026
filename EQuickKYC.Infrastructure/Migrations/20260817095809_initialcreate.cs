@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace EQuickKYC.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,6 +41,31 @@ namespace EQuickKYC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Banks",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    BranchName = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    BranchCode = table.Column<string>(type: "nvarchar(50)", nullable: false),
+                    IFSCCode = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    MICRCode = table.Column<string>(type: "nvarchar(20)", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(500)", nullable: false),
+                    AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Banks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Banks_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "AddressId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -52,13 +76,15 @@ namespace EQuickKYC.Infrastructure.Migrations
                     Dob = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Gender = table.Column<string>(type: "nvarchar(1)", maxLength: 1, nullable: false),
                     AddressId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CardId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Mobile = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    status = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,6 +104,11 @@ namespace EQuickKYC.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Banks_AddressId",
+                table: "Banks",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_AddressId",
                 table: "Users",
                 column: "AddressId",
@@ -88,12 +119,28 @@ namespace EQuickKYC.Infrastructure.Migrations
                 name: "IX_Users_CardId",
                 table: "Users",
                 column: "CardId",
+                unique: true,
+                filter: "[CardId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Mobile",
+                table: "Users",
+                column: "Mobile",
                 unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Banks");
+
             migrationBuilder.DropTable(
                 name: "Users");
 

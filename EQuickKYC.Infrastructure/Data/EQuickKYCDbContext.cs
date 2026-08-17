@@ -1,15 +1,15 @@
 ﻿using EQuickKYC.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EQuickKYC.Infrastructure.Data
 {
-    public class EQuickKYCDbContext:DbContext
+    public class EQuickKYCDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Bank> Banks { get; set; }
 
-        public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options):base(options)
-        { 
+        public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
+        {
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

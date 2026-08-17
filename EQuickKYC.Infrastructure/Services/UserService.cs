@@ -45,20 +45,20 @@ namespace EQuickKYC.Infrastructure.Services
             int success = await _dbContext.SaveChangesAsync();
 
             //atleast one row saved
-            if(success>=1)
-            return new UserResponse
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                MiddleName = user.MiddleName,
-                LastName = user.LastName,
-                Dob = user.Dob,
-                Gender = user.Gender,
-                Mobile = user.Mobile,
-                Email = user.Email,
-                CreatedOn = user.CreatedOn,
-                Address = user.Address
-            };
+            if (success >= 1)
+                return new UserResponse
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Dob = user.Dob,
+                    Gender = user.Gender,
+                    Mobile = user.Mobile,
+                    Email = user.Email,
+                    CreatedOn = user.CreatedOn,
+                    Address = user.Address
+                };
 
             //save failed returning null
             return null;
