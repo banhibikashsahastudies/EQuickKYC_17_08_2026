@@ -1,0 +1,6 @@
+@EQuickKYC.API_HostAddress = http://localhost:5171
+
+GET {{EQuickKYC.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

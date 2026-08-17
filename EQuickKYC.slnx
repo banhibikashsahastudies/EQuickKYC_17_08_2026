@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="EQuickKYC.API/EQuickKYC.API.csproj" />
+  <Project Path="EQuickKYC.Application/EQuickKYC.Application.csproj" />
+  <Project Path="EQuickKYC.Domain/EQuickKYC.Domain.csproj" />
+  <Project Path="EQuickKYC.Infrastructure/EQuickKYC.Infrastructure.csproj" />
+</Solution>
