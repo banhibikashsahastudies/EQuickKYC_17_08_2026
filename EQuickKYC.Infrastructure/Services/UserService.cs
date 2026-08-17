@@ -88,9 +88,54 @@ namespace EQuickKYC.Infrastructure.Services
             return users.Select(x => ToUserResponse(x)).ToList();
         }
 
-        public Task<UserResponse> UpdateUser()
+        public async Task<UserResponse> GetUser(Guid id)
         {
-            throw new NotImplementedException();
+           if(id == Guid.Empty)
+           {
+                throw new ArgumentException("User Id is empty");
+           }
+
+            User? user = await _dbContext.Users.Where(user=>user.Id==id).FirstOrDefaultAsync();
+
+            return ToUserResponse(user);
+        }
+
+        public async Task<UserResponse> UpdateUser(UpdateUserRequest request)
+        {
+            User? user = await _dbContext.Users
+                .Include(x => x.Address)
+                .FirstOrDefaultAsync(x => x.Id == request.Id);
+
+            // User not found
+            if (user == null)
+                throw new Exception("User not found");
+
+            // Update only provided fields
+            if (!string.IsNullOrWhiteSpace(request.FirstName))
+                user.FirstName = request.FirstName;
+
+            if (!string.IsNullOrWhiteSpace(request.MiddleName))
+                user.MiddleName = request.MiddleName;
+
+            if (!string.IsNullOrWhiteSpace(request.LastName))
+                user.LastName = request.LastName;
+
+            if (request.Dob.HasValue)
+                user.Dob = request.Dob.Value;
+
+            if (!string.IsNullOrWhiteSpace(request.Gender))
+                user.Gender = request.Gender;
+
+            //will be updated on request
+            //if (!string.IsNullOrWhiteSpace(request.Mobile))
+            //    user.Mobile = request.Mobile;
+
+            if (!string.IsNullOrWhiteSpace(request.Email))
+                user.Email = request.Email;
+
+            int rowsAffected = await _dbContext.SaveChangesAsync();
+
+            return rowsAffected>=1?ToUserResponse(user):null;
         }
 
         private UserResponse ToUserResponse(User user)

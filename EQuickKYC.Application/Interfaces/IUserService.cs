@@ -11,7 +11,9 @@ namespace EQuickKYC.Application.Interfaces
 
         Task<List<UserResponse>> GetAllUser();
 
-        Task<UserResponse> UpdateUser();
+        Task<UserResponse> GetUser(Guid id);
+
+        Task<UserResponse> UpdateUser(UpdateUserRequest request);
 
         Task<bool> DeleteUser(DeleteUserRequest request);
     }

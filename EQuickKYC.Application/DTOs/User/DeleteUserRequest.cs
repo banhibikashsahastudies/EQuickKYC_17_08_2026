@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EQuickKYC.Application.DTOs.User
+﻿namespace EQuickKYC.Application.DTOs.User
 {
     public class DeleteUserRequest
     {
