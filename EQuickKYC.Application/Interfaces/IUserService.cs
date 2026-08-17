@@ -8,5 +8,11 @@ namespace EQuickKYC.Application.Interfaces
     public interface IUserService
     {
         Task<UserResponse> AddUser(AddUserRequest request);
+
+        Task<List<UserResponse>> GetAllUser();
+
+        Task<UserResponse> UpdateUser();
+
+        Task<bool> DeleteUser(DeleteUserRequest request);
     }
 }

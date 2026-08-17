@@ -18,10 +18,10 @@ namespace EQuickKYC.API.Controllers
         }
 
         // GET: api/<ValuesController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("[action]")]
+        public async Task<ActionResult<List<UserResponse>>> GetAllUsers()
         {
-            return new string[] { "value1", "value2" };
+            return await _userService.GetAllUser();
         }
 
         // GET api/<ValuesController>/5
@@ -35,6 +35,16 @@ namespace EQuickKYC.API.Controllers
         [HttpPost("[action]")]
         public async Task<ActionResult<UserResponse>> Post([FromBody] AddUserRequest? request )
         {
+            if(request == null) throw new ArgumentNullException(nameof(request));
+
+            foreach(var property in typeof(AddUserRequest).GetProperties())
+            {
+                if(property.GetValue(request) == null)
+                {
+                    throw new ArgumentException($"{property.Name} is null, please send correct data");
+                }
+            }
+
             UserResponse savedUser = await _userService.AddUser(request);
             return savedUser;
         }
@@ -46,9 +56,20 @@ namespace EQuickKYC.API.Controllers
         }
 
         // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("[action]")]
+        public async Task<ActionResult<bool>> Delete(DeleteUserRequest request)
         {
+            if(request == null) throw new ArgumentNullException(nameof(request));
+
+            foreach (var property in typeof(DeleteUserRequest).GetProperties())
+            {
+                if (property.GetValue(request) == null)
+                {
+                    throw new ArgumentException($"{property.Name} is null, please send correct data");
+                }
+            }
+
+            return await _userService.DeleteUser(request);
         }
     }
 }

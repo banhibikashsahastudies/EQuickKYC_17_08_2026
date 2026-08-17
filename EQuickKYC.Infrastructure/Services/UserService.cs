@@ -2,6 +2,7 @@
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EQuickKYC.Infrastructure.Services
 {
@@ -64,6 +65,66 @@ namespace EQuickKYC.Infrastructure.Services
             return null;
         }
 
+        public async Task<bool> DeleteUser(DeleteUserRequest request)
+        {
+            User? userToDelete = await _dbContext.Users.Where(u => u.Id == request.Id).FirstOrDefaultAsync();
 
+            if (userToDelete == null)
+            {
+                return false;
+            }
+
+            userToDelete.IsDeleted = true;
+
+            int rowsAffected = await _dbContext.SaveChangesAsync();
+
+            return rowsAffected>0?true:false;
+        }
+
+        public async Task<List<UserResponse>> GetAllUser()
+        {
+            var users = await _dbContext.Users.Include(x => x.Address).Include(x => x.Card).ToListAsync();
+
+            return users.Select(x => ToUserResponse(x)).ToList();
+        }
+
+        public Task<UserResponse> UpdateUser()
+        {
+            throw new NotImplementedException();
+        }
+
+        private UserResponse ToUserResponse(User user)
+        {
+            return new UserResponse
+            {
+                Id = user.Id,
+
+                FirstName = user.FirstName,
+                MiddleName = user.MiddleName,
+                LastName = user.LastName,
+
+                Dob = user.Dob,
+                Gender = user.Gender,
+
+                Mobile = user.Mobile,
+                Email = user.Email,
+
+                AddressId = user.AddressId,
+                Address = user.Address,
+
+                // Don't expose these
+                CreatedOn = null,
+                UpdatedOn = null,
+                CreatedBy = null,
+                UpdatedBy = null,
+
+                // Don't expose Card
+                CardId = null,
+                Card = null,
+
+                // Don't expose soft-delete status
+                IsDeleted = null
+            };
+        }
     }
 }
