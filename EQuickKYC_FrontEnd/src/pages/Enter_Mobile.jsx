@@ -1,32 +1,70 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API_BASE_URL from '../components/base_Url'
 
 function Index() {
   const [phone, setPhone] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
   const navigate = useNavigate()
 
-  const handleContinue = () => {
-     
+  async function sendPhoneNumber(phone) {
+    const response = await fetch(`${API_BASE_URL}/User/phone`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ phone })
+    })
+
+    return response
+  }
+
+  const handleContinue = async () => {
+    setError('')
+
     if (!/^\d{10}$/.test(phone)) {
-      alert('Please enter a valid 10-digit mobile number')
+      setError('Please enter a valid 10-digit mobile number')
       return
     }
 
-    navigate('/verify_mobile_otp')
+    //demo navigate
+    navigate('/verify_mobile_otp',{
+      state: { phone: phone }
+    })
+
+    // try {
+    //   setLoading(true)
+
+    //   const response = await sendPhoneNumber(phone)
+
+    //   if (response.status === 200) {
+    //     navigate('/verify_mobile_otp')
+    //   } else {
+    //     setError('Failed to send OTP. Please try again.')
+    //   }
+    // } catch (error) {
+    //   setError('Failed to send OTP. Please try again.')
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+
         <h1 className="text-3xl font-bold text-gray-900 text-center">
           EQuickKYC
         </h1>
-        
+
         <p className="text-gray-500 text-center mt-2">
           Enter your mobile number to continue
         </p>
 
         <div className="mt-8">
+
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Mobile Number
           </label>
@@ -46,13 +84,21 @@ function Index() {
             />
           </div>
 
+          {error && (
+            <p className="mt-3 text-sm text-red-600">
+              {error}
+            </p>
+          )}
+
           <button
             type="button"
             onClick={handleContinue}
-            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition"
+            disabled={loading}
+            className="w-full mt-6 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition disabled:bg-blue-400"
           >
-            Continue
+            {loading ? 'Sending OTP...' : 'Continue'}
           </button>
+
         </div>
       </div>
     </div>

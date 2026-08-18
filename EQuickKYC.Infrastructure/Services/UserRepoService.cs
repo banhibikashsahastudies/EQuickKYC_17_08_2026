@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using EQuickKYC.Application.DTOs.User;
-using EQuickKYC.Domain.Entities;
+﻿using EQuickKYC.Domain.Entities;
 using EQuickKYC.Domain.Models;
 using EQuickKYC.Domain.RepoContracts;
 using EQuickKYC.Infrastructure.Data;
