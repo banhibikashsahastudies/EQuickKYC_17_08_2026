@@ -1,9 +1,9 @@
-﻿using EQuickKYC.Application.DTOs.Address;
-using EQuickKYC.Application.DTOs.Bank;
+﻿using EQuickKYC.Application.DTOs.Bank;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using EQuickKYC.Application.DTOs.AddressDTO;
 
 namespace EQuickKYC.Infrastructure.Services
 {

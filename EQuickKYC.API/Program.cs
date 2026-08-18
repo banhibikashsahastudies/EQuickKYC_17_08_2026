@@ -1,5 +1,6 @@
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
+using EQuickKYC.Domain.RepoContracts;
 using EQuickKYC.Infrastructure.Data;
 using EQuickKYC.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,27 +14,14 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 //dbcontext
-//builder.Services.AddDbContext<EQuickKYCDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-//});
-
-var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection");
-
-//Console.WriteLine("=================================");
-//Console.WriteLine($"Connection String: {connectionString}");
-//Console.WriteLine("=================================");
-
 builder.Services.AddDbContext<EQuickKYCDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
-
 
 //services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepoService,UserRepoService>();
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<AppBankService>();
 

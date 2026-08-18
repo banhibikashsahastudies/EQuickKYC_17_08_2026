@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EQuickKYC.Infrastructure.Services
 {
-    public class UserService : IUserService
+    public class UserService_old : IUserService
     {
         private readonly EQuickKYCDbContext _dbContext;
-        public UserService(EQuickKYCDbContext dbContext)
+        public UserService_old(EQuickKYCDbContext dbContext)
         {
             _dbContext = dbContext;
         }
