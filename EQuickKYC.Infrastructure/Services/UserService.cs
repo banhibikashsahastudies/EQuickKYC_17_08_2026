@@ -58,6 +58,7 @@ namespace EQuickKYC.Infrastructure.Services
             int success = await _dbContext.SaveChangesAsync();
 
             //atleast one row saved
+<<<<<<< HEAD
             if(success>=1)
             return new UserResponse
             {
@@ -77,6 +78,22 @@ namespace EQuickKYC.Infrastructure.Services
                 CardId = user.CardId,
                 AddressId= user.AddressId
             };
+=======
+            if (success >= 1)
+                return new UserResponse
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Dob = user.Dob,
+                    Gender = user.Gender,
+                    Mobile = user.Mobile,
+                    Email = user.Email,
+                    CreatedOn = user.CreatedOn,
+                    Address = user.Address
+                };
+>>>>>>> origin/Abhishek
 
             //save failed returning null
             return null;

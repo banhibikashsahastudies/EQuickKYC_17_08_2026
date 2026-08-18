@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    [Migration("20260817063801_Added_soft_delete_and_status")]
-    partial class Added_soft_delete_and_status
+    [Migration("20260817095809_initialcreate")]
+    partial class initialcreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,49 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasKey("AddressId");
 
                     b.ToTable("Addresses", (string)null);
+                });
+
+            modelBuilder.Entity("EQuickKYC.Domain.Entities.Bank", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IFSCCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MICRCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.ToTable("Banks");
                 });
 
             modelBuilder.Entity("EQuickKYC.Domain.Entities.Card", b =>
@@ -87,7 +130,7 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
+                    b.Property<Guid?>("CardId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
@@ -146,9 +189,27 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("CardId")
+                        .IsUnique()
+                        .HasFilter("[CardId] IS NOT NULL");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Mobile")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("EQuickKYC.Domain.Entities.Bank", b =>
+                {
+                    b.HasOne("EQuickKYC.Domain.Entities.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("EQuickKYC.Domain.Entities.User", b =>
@@ -161,8 +222,7 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasOne("EQuickKYC.Domain.Entities.Card", "Card")
                         .WithOne()
                         .HasForeignKey("EQuickKYC.Domain.Entities.User", "CardId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
 
