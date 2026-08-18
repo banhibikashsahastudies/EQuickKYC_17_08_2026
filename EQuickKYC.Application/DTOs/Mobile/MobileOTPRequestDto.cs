@@ -3,6 +3,5 @@
     public record MobileOTPRequestDto
     {
         public string Mobile { get; set; }
-
     }
 }

@@ -2,8 +2,7 @@
 {
     public interface IEmailOTPService
     {
-        Task<bool> SendEmailOTPAsync(string email, string otp);
+        Task<bool> SendEmailOTPAsync(string email);
         Task<bool> VerifyEmailOTPAsync(string email, string otp);
-        Task<bool> SaveEmailOTPAsync();
     }
 }

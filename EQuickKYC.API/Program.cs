@@ -40,6 +40,10 @@ builder.Services.AddScoped<AppBankService>();
 builder.Services.AddScoped<IMobileOTPService, EQuickKYC.Infrastructure.Services.MobileOTPService>();
 builder.Services.AddScoped<EQuickKYC.Application.Service.MobileOTPService>();
 
+builder.Services.AddScoped<IEmailOTPService, EmailOTPService>();
+builder.Services.AddScoped<EmailOTPServiceApplication>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

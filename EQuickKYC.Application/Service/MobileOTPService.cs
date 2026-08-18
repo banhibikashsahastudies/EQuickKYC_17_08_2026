@@ -12,24 +12,26 @@ namespace EQuickKYC.Application.Service
         {
             _mobileOTPService = mobileOTPService;
         }
-        public async Task<Result<bool>> SendMobileOTP(MobileOTPRequestDto dto)
+        public async Task<Result<bool>> SendMobileOTP(MobileOTPRequestDto mobileRequestDto)
         {
-            if (string.IsNullOrEmpty(dto.Mobile))
+            if (string.IsNullOrEmpty(mobileRequestDto.Mobile))
             {
                 return Result<bool>.Fail("Mobile number is required.");
             }
-            var result = await _mobileOTPService.SendMobileOTPAsync(dto.Mobile);
+            var result = await _mobileOTPService.SendMobileOTPAsync(mobileRequestDto.Mobile);
 
             if (!result) return Result<bool>.Fail("Mobile OTP already verified.");
 
             return Result<bool>.Ok(true, "Mobile OTP sent successfully.");
         }
 
-        public async Task<Result<bool>> VerifyMobileOTP(MobileOTPVerifyRequest mobileOTP)
+        public async Task<Result<bool>> VerifyMobileOTP(MobileOTPVerifyRequest mobileVerifyDto
+            )
         {
-            if (!string.IsNullOrEmpty(mobileOTP.Mobile) && !string.IsNullOrEmpty(mobileOTP.OTP))
+            if (!string.IsNullOrEmpty(mobileVerifyDto.Mobile) && !string.IsNullOrEmpty(mobileVerifyDto.OTP))
             {
-                var result = await _mobileOTPService.VerifyMobileOTPAsync(mobileOTP.Mobile, mobileOTP.OTP);
+                var result = await _mobileOTPService.VerifyMobileOTPAsync(mobileVerifyDto.Mobile, mobileVerifyDto.OTP);
+
                 if (!result)
                 {
                     return Result<bool>.Fail("Already verified.");
