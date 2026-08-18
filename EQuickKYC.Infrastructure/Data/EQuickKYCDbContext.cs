@@ -6,12 +6,12 @@ namespace EQuickKYC.Infrastructure.Data
     public class EQuickKYCDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-<<<<<<< HEAD
+
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Card> Cards { get; set; }
-=======
+
         public DbSet<Bank> Banks { get; set; }
->>>>>>> origin/Abhishek
+
 
         public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
         {
