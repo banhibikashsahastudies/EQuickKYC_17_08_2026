@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../components/base_Url'
+import { useKyc } from '../context/KycContext'
 
 function Index() {
-  const [phone, setPhone] = useState('')
+  const { phone, setPhone } = useKyc()
+
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -29,16 +31,15 @@ function Index() {
       return
     }
 
-    //demo navigate
-    navigate('/verify_mobile_otp',{
-      state: { phone: phone }
-    })
+    // Demo navigation
+    navigate('/verify_mobile_otp')
 
+    // Backend implementation later
     // try {
     //   setLoading(true)
-
+    //
     //   const response = await sendPhoneNumber(phone)
-
+    //
     //   if (response.status === 200) {
     //     navigate('/verify_mobile_otp')
     //   } else {

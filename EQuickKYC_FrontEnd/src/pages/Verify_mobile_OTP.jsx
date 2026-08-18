@@ -1,31 +1,31 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../components/base_Url'
+import { useKyc } from '../context/KycContext'
 
 function Verify_Mobile_OTP() {
+  const { phone } = useKyc()
+
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const location = useLocation()
   const navigate = useNavigate()
 
-  const phone = location.state?.phone
-
   async function verifyMobileOtp(phone, otp) {
-  const response = await fetch(`${API_BASE_URL}/User/verify-mobile-otp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      phone: phone,
-      otp: otp
+    const response = await fetch(`${API_BASE_URL}/User/verify-mobile-otp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        phone: phone,
+        otp: otp
+      })
     })
-  })
 
-  return response
-}
+    return response
+  }
 
   const verify_otp_mobile = async () => {
     setError('')
@@ -44,10 +44,12 @@ function Verify_Mobile_OTP() {
     // Demo navigation
     navigate('/enter_email')
 
-    // const response = await verifyMobileOtp(phone,otp)
-
-    // if(response.status == 200)
+    // Backend implementation later
+    // const response = await verifyMobileOtp(phone, otp)
+    //
+    // if (response.status === 200) {
     //   navigate('/enter_email')
+    // }
   }
 
   const resend_mobile_otp = () => {
