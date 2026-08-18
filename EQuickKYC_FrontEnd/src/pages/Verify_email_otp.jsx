@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../components/base_Url'
+import { useKyc } from '../context/KycContext'
 
 function Verify_email_otp() {
+    const { email } = useKyc()
+
     const [otp, setOtp] = useState('')
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
-    const location = useLocation()
     const navigate = useNavigate()
-
-    const email = location.state?.email
 
     async function verifyEmailOtp(email, otp) {
         const response = await fetch(`${API_BASE_URL}/User/verify-email-otp`, {
@@ -56,6 +56,7 @@ function Verify_email_otp() {
         //     navigate('/enter_pan_details')
         // }
     }
+
     const resend_email_otp = () => {
         setError('')
         console.log('Email OTP sent again')

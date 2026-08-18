@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../components/base_Url'
+import { useKyc } from '../context/KycContext'
 
 function Enter_Email() {
-  const [email, setEmail] = useState('')
+  const { email, setEmail } = useKyc()
+
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -30,20 +32,16 @@ function Enter_Email() {
     }
 
     // Demo navigation
-    navigate('/verify_email_otp', {
-      state: { email: email }
-    })
+    navigate('/verify_email_otp')
 
-    // Later, when backend is ready:
+    // Backend implementation later
     // try {
     //   setLoading(true)
     //
     //   const response = await sendEmail(email)
     //
     //   if (response.status === 200) {
-    //     navigate('/verify_email_otp', {
-    //       state: { email: email }
-    //     })
+    //     navigate('/verify_email_otp')
     //   } else {
     //     setError('Failed to send OTP. Please try again.')
     //   }
@@ -75,7 +73,10 @@ function Enter_Email() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              setError('')
+            }}
             placeholder="Enter email address"
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
