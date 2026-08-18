@@ -30,14 +30,14 @@ namespace EQuickKYC.Infrastructure.Services
 
                 CreatedOn = DateTime.UtcNow,
 
-                Address = request.Address
+                //Address = request.Address
             };
 
-            if (request.Address != null)
-            {
-                request.Address.AddressId = Guid.NewGuid();
-                user.AddressId = request.Address.AddressId;
-            }
+            //if (request.Address != null)
+            //{
+            //    request.Address.AddressId = Guid.NewGuid();
+            //    user.AddressId = request.Address.AddressId;
+            //}
 
             _dbContext.Users.Add(user);
 
@@ -57,7 +57,7 @@ namespace EQuickKYC.Infrastructure.Services
                     Mobile = user.Mobile,
                     Email = user.Email,
                     CreatedOn = user.CreatedOn,
-                    Address = user.Address
+                    // Address = user.Address
                 };
 
             //save failed returning null

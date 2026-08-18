@@ -4,6 +4,7 @@ using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    partial class EQuickKYCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260818040539_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,56 +134,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.ToTable("Cards", (string)null);
                 });
 
-            modelBuilder.Entity("EQuickKYC.Domain.Entities.EmailOTP", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OTP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EmailOTPs");
-                });
-
-            modelBuilder.Entity("EQuickKYC.Domain.Entities.MobileOTP", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Mobile")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OTP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("VerifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MobileOTPs");
-                });
-
             modelBuilder.Entity("EQuickKYC.Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -259,41 +212,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("EQuickKYC.Domain.Entities.UserMaster", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("EmailOTPId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("EmailVerifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsEmailVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsMobileVerified")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid>("MobileOTPId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("MobileVerifiedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Status")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserMasters");
                 });
 
             modelBuilder.Entity("EQuickKYC.Domain.Entities.Bank", b =>

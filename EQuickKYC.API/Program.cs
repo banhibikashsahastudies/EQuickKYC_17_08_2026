@@ -37,6 +37,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<AppBankService>();
 
+builder.Services.AddScoped<IMobileOTPService, EQuickKYC.Infrastructure.Services.MobileOTPService>();
+builder.Services.AddScoped<EQuickKYC.Application.Service.MobileOTPService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

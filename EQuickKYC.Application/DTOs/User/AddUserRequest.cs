@@ -1,10 +1,4 @@
-﻿using EQuickKYC.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Text;
-
-namespace EQuickKYC.Application.DTOs.User
+﻿namespace EQuickKYC.Application.DTOs.User
 {
     public class AddUserRequest
     {
@@ -13,7 +7,7 @@ namespace EQuickKYC.Application.DTOs.User
         public string? LastName { get; set; }
         public DateTime Dob { get; set; }
         public string Gender { get; set; }
-        public Address? Address { get; set; }
+        //public Address? Address { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
     }

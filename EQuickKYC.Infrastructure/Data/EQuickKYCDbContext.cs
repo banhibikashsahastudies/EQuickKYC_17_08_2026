@@ -7,6 +7,9 @@ namespace EQuickKYC.Infrastructure.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Bank> Banks { get; set; }
+        public DbSet<UserMaster> UserMasters { get; set; }
+        public DbSet<MobileOTP> MobileOTPs { get; set; }
+        public DbSet<EmailOTP> EmailOTPs { get; set; }
 
         public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
         {
