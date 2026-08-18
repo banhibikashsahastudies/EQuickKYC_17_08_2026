@@ -1,10 +1,15 @@
-import { useState } from 'react'
+import { useKyc } from '../context/KycContext'
 import API_BASE_URL from '../components/base_Url'
 
 function Enter_PAN_Details() {
-    const [pan, setPan] = useState('')
-    const [name, setName] = useState('')
-    const [dob, setDob] = useState('')
+    const {
+        pan,
+        setPan,
+        name,
+        setName,
+        dob,
+        setDob
+    } = useKyc()
 
     const verify_pan = async (pan, dob, name) => {
         const response = await fetch(`${API_BASE_URL}/User/pan`, {
@@ -63,12 +68,13 @@ function Enter_PAN_Details() {
         console.log('DOB:', dob)
         console.log('Age:', age)
 
-        //demo alert
+        // Demo verification
         alert('PAN details are valid')
 
+        // Backend verification later
         // try {
         //     const response = await verify_pan(pan, dob, name)
-
+        //
         //     if (response.status === 200) {
         //         alert('PAN details are valid')
         //     } else {
