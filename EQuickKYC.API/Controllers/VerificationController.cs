@@ -7,13 +7,16 @@ namespace EQuickKYC.API.Controllers
     [ApiController]
     public class VerificationController : ControllerBase
     {
+        #region Services
         private readonly PanService _panService;
 
         public VerificationController(PanService panService)
         {
             _panService = panService;
         }
+        #endregion
 
+        #region PAN Verification for Admin
         [HttpGet("pan-verification")]
         public async Task<ActionResult> Get([FromQuery] string panNumber)
         {
@@ -24,5 +27,6 @@ namespace EQuickKYC.API.Controllers
             var result = await _panService.GetPanDetailsByPannumber(panNumber);
             return Ok(result);
         }
+        #endregion
     }
 }
