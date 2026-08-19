@@ -34,14 +34,14 @@ namespace EQuickKYC.Application.Service
             return Result<RegistrationMaster>.Ok(registrationMaster, "PAN registration successful");
         }
 
-        public async Task<Result<string>> GetPanDetailsByPannumber(string panNumber)
+        public async Task<Result<PanResponseDto>> GetPanDetailsByPannumber(string panNumber)
         {
             var panDetails = await _panRegistrationService.GetPanDetailsByPannumberAsync(panNumber);
             if (panDetails == null)
             {
-                return Result<string>.Fail("The PAN was not found in our database.");
+                return Result<PanResponseDto>.Fail("The PAN was not found in our database.");
             }
-            return Result<string>.Ok(panDetails, "The PAN was found in our database.");
+            return Result<PanResponseDto>.Ok(panDetails, "The PAN was found in our database.");
         }
     }
 }

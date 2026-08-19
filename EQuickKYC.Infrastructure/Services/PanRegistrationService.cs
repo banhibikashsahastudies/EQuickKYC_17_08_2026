@@ -1,4 +1,5 @@
-﻿using EQuickKYC.Application.Interfaces;
+﻿using EQuickKYC.Application.DTOs.Pan;
+using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
 using EQuickKYC.Infrastructure.Security;
@@ -19,14 +20,22 @@ namespace EQuickKYC.Infrastructure.Services
             _hashService = hashService;
         }
 
-        public async Task<string> GetPanDetailsByPannumberAsync(string PanNo)
+        public async Task<PanResponseDto> GetPanDetailsByPannumberAsync(string PanNo)
         {
 
             var hashedPan = _hashService.Hash(PanNo);
 
             var panDetails = await _dbContext.RegistrationMasters.FirstOrDefaultAsync(x => x.PanNoHash == hashedPan);
             //return _encryptionService.Decrypt(panDetails?.PanNo.ToUpper());
-            return panDetails?.PanNo == null ? null : _encryptionService.Decrypt(panDetails.PanNo);
+            if (panDetails == null)
+                return null;
+
+            return new PanResponseDto
+            {
+                Name = panDetails.Name,
+                PanNo = _encryptionService.Decrypt(panDetails.PanNo),
+                DOB = panDetails.DOB,
+            };
         }
 
         public async Task<bool> RegisterPanAsync(RegistrationMaster registrationMaster, Guid userMasterId)

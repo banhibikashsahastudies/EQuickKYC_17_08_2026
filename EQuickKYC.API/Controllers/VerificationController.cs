@@ -15,7 +15,7 @@ namespace EQuickKYC.API.Controllers
         }
 
         [HttpGet("pan-verification")]
-        public async Task<ActionResult> Get([FromBody] string panNumber)
+        public async Task<ActionResult> Get([FromQuery] string panNumber)
         {
             if (string.IsNullOrWhiteSpace(panNumber))
             {

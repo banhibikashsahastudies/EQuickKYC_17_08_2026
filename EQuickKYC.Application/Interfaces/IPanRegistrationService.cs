@@ -1,10 +1,11 @@
-﻿using EQuickKYC.Domain.Entities;
+﻿using EQuickKYC.Application.DTOs.Pan;
+using EQuickKYC.Domain.Entities;
 
 namespace EQuickKYC.Application.Interfaces
 {
     public interface IPanRegistrationService
     {
         Task<bool> RegisterPanAsync(RegistrationMaster registrationMaster, Guid userMasterId);
-        Task<string> GetPanDetailsByPannumberAsync(string PanNo);
+        Task<PanResponseDto> GetPanDetailsByPannumberAsync(string PanNo);
     }
 }
