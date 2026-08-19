@@ -4,5 +4,6 @@
     {
         public string Mobile { get; set; }
         public string OTP { get; set; }
+        public string Flag { get; set; }
     }
 }

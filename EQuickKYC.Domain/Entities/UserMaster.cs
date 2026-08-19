@@ -5,6 +5,7 @@
         public Guid Id { get; set; }
         public Guid MobileOTPId { get; set; }
         public Guid? EmailOTPId { get; set; }
+        public string Flag { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? MobileVerifiedAt { get; set; }
         public DateTime? EmailVerifiedAt { get; set; }

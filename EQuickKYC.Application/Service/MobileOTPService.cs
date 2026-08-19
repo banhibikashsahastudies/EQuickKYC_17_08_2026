@@ -29,7 +29,7 @@ namespace EQuickKYC.Application.Service
         {
             if (!string.IsNullOrEmpty(mobileVerifyDto.Mobile) && !string.IsNullOrEmpty(mobileVerifyDto.OTP))
             {
-                var result = await _mobileOTPService.VerifyMobileOTPAsync(mobileVerifyDto.Mobile, mobileVerifyDto.OTP);
+                var result = await _mobileOTPService.VerifyMobileOTPAsync(mobileVerifyDto.Mobile, mobileVerifyDto.OTP, mobileVerifyDto.Flag);
 
                 if (result == null)
                 {

@@ -43,7 +43,8 @@ namespace EQuickKYC.Infrastructure.Services
                 MobileHash = hashedMobile,
                 OTP = _encryptionService.Encrypt(otp),
                 OTPHash = _hashService.Hash(otp),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+
             };
 
             _dbContext.MobileOTPs.Add(mobileOtp);
@@ -56,7 +57,7 @@ namespace EQuickKYC.Infrastructure.Services
             };
         }
 
-        public async Task<RegistrationResponseDto> VerifyMobileOTPAsync(string mobile, string otp)
+        public async Task<RegistrationResponseDto> VerifyMobileOTPAsync(string mobile, string otp, string flag)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
@@ -90,7 +91,8 @@ namespace EQuickKYC.Infrastructure.Services
                     IsEmailVerified = false,
                     MobileVerifiedAt = DateTime.UtcNow,
                     EmailVerifiedAt = null,
-                    Status = true
+                    Status = true,
+                    Flag = flag,
                 };
 
                 var registraTionMaster = new RegistrationMaster
