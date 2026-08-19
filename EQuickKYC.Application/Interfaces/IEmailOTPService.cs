@@ -1,8 +1,10 @@
-﻿namespace EQuickKYC.Application.Interfaces
+﻿using EQuickKYC.Application.DTOs.Email;
+
+namespace EQuickKYC.Application.Interfaces
 {
     public interface IEmailOTPService
     {
-        Task<bool> SendEmailOTPAsync(string email);
-        Task<bool> VerifyEmailOTPAsync(string email, string otp);
+        Task<EmailOtpResponseDto> SendEmailOTPAsync(string email);
+        Task<EmailOtpResponseDto> VerifyEmailOTPAsync(string email, string otp, Guid userMasterId);
     }
 }

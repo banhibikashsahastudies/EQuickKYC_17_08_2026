@@ -12,33 +12,32 @@ namespace EQuickKYC.Application.Service
         {
             _mobileOTPService = mobileOTPService;
         }
-        public async Task<Result<bool>> SendMobileOTP(MobileOTPRequestDto mobileRequestDto)
+        public async Task<Result<MobileOtpResponseDto>> SendMobileOTP(MobileOTPRequestDto mobileRequestDto)
         {
             if (string.IsNullOrEmpty(mobileRequestDto.Mobile))
             {
-                return Result<bool>.Fail("Mobile number is required.");
+                return Result<MobileOtpResponseDto>.Fail("Mobile number is required.");
             }
             var result = await _mobileOTPService.SendMobileOTPAsync(mobileRequestDto.Mobile);
 
-            if (!result) return Result<bool>.Fail("Mobile OTP already verified.");
+            if (result == null) return Result<MobileOtpResponseDto>.Fail("Mobile OTP already verified.");
 
-            return Result<bool>.Ok(true, "Mobile OTP sent successfully.");
+            return Result<MobileOtpResponseDto>.Ok(result, "Mobile OTP sent successfully.");
         }
 
-        public async Task<Result<bool>> VerifyMobileOTP(MobileOTPVerifyRequest mobileVerifyDto
-            )
+        public async Task<Result<RegistrationResponseDto>> VerifyMobileOTP(MobileOTPVerifyRequest mobileVerifyDto)
         {
             if (!string.IsNullOrEmpty(mobileVerifyDto.Mobile) && !string.IsNullOrEmpty(mobileVerifyDto.OTP))
             {
                 var result = await _mobileOTPService.VerifyMobileOTPAsync(mobileVerifyDto.Mobile, mobileVerifyDto.OTP);
 
-                if (!result)
+                if (result == null)
                 {
-                    return Result<bool>.Fail("Already verified.");
+                    return Result<RegistrationResponseDto>.Fail("Already verified.");
                 }
-                return Result<bool>.Ok(true, "Mobile OTP verified successfully.");
+                return Result<RegistrationResponseDto>.Ok(result, "Mobile OTP verified successfully.");
             }
-            return Result<bool>.Fail("Invalid mobile number or OTP.");
+            return Result<RegistrationResponseDto>.Fail("Invalid mobile number or OTP.");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using EQuickKYC.Application.Interfaces;
+﻿using EQuickKYC.Application.DTOs.Email;
+using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -14,15 +15,15 @@ namespace EQuickKYC.Infrastructure.Services
             _dbContext = dbContext;
         }
 
-        public async Task<bool> SendEmailOTPAsync(string email)
+        public async Task<EmailOtpResponseDto> SendEmailOTPAsync(string email)
         {
-            var isVerified = await _dbContext.MobileOTPs
-                    .Where(x => x.Mobile == email)
+            var isVerified = await _dbContext.EmailOTPs
+                    .Where(x => x.Email == email)
                     .FirstOrDefaultAsync();
 
-            if (isVerified.VerifiedAt != null)
+            if (isVerified?.VerifiedAt != null)
             {
-                return false;
+                return null;
             }
 
             // Generate a 6-digit OTP.
@@ -38,44 +39,72 @@ namespace EQuickKYC.Infrastructure.Services
 
             _dbContext.EmailOTPs.Add(emailOtp);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return new EmailOtpResponseDto
+            {
+                Email = emailOtp.Email,
+                OTP = emailOtp.OTP
+            };
         }
 
-        public async Task<bool> VerifyEmailOTPAsync(string email, string otp)
+        public async Task<EmailOtpResponseDto> VerifyEmailOTPAsync(string email, string otp, Guid userMasterId)
         {
-            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            await using var transaction =
+                await _dbContext.Database.BeginTransactionAsync();
+
             try
             {
+                // Find the latest OTP for this email
                 var emailOtp = await _dbContext.EmailOTPs
-                    .Where(x => x.Email == email)
+                    .Where(x => x.Email == email && x.OTP == otp)
                     .OrderByDescending(x => x.CreatedAt)
                     .FirstOrDefaultAsync();
 
                 if (emailOtp == null)
                 {
-                    return false;
+                    return null;
                 }
-                if (emailOtp.OTP.ToString() != otp) return false;
 
-                if (emailOtp.VerifiedAt != null) return false;
+                // Check OTP
+                if (emailOtp.OTP.ToString() != otp)
+                {
+                    return null;
+                }
+
+                // Don't allow the same OTP to be verified again
+                if (emailOtp.VerifiedAt != null)
+                {
+                    return null;
+                }
+
+                // Find the EXISTING UserMaster
+                var user = await _dbContext.UserMasters
+                    .FirstOrDefaultAsync(x => x.Id == userMasterId);
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                // Verify the email OTP
                 emailOtp.VerifiedAt = DateTime.UtcNow;
 
-                var user = new UserMaster
-                {
-                    Id = Guid.NewGuid(),
-                    EmailOTPId = emailOtp.Id,
-                    CreatedAt = DateTime.UtcNow,
-                    IsMobileVerified = true,
-                    IsEmailVerified = false,
-                    MobileVerifiedAt = emailOtp.VerifiedAt,
-                    EmailVerifiedAt = null,
-                    Status = true
-                };
+                // Update existing UserMaster
+                user.EmailOTPId = emailOtp.Id;
+                user.IsEmailVerified = true;
+                user.EmailVerifiedAt = DateTime.UtcNow;
 
-                _dbContext.UserMasters.Add(user);
+                // If you have Email property in UserMaster
+                // user.Email = emailOtp.Email;
+
                 await _dbContext.SaveChangesAsync();
+
                 await transaction.CommitAsync();
-                return true;
+
+                return new EmailOtpResponseDto
+                {
+                    Email = emailOtp.Email,
+                    OTP = emailOtp.OTP
+                };
             }
             catch
             {
@@ -83,6 +112,49 @@ namespace EQuickKYC.Infrastructure.Services
                 throw;
             }
         }
+
+        //public async Task<EmailOtpResponseDto> VerifyEmailOTPAsync(string email, string otp, Guid userMasterId)
+        //{
+        //    await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        //    try
+        //    {
+        //        var emailOtp = await _dbContext.EmailOTPs
+        //            .Where(x => x.Email == email && x.OTP == otp)
+        //            .OrderByDescending(x => x.CreatedAt)
+        //            .FirstOrDefaultAsync();
+
+        //        if (emailOtp == null)
+        //        {
+        //            return null;
+        //        }
+        //        if (emailOtp.OTP.ToString() != otp) return null;
+
+        //        if (emailOtp.VerifiedAt != null) return null;
+        //        emailOtp.VerifiedAt = DateTime.UtcNow;
+
+        //        var user = new UserMaster
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            EmailOTPId = emailOtp.Id,
+        //            IsEmailVerified = true,
+        //            EmailVerifiedAt = DateTime.UtcNow,
+        //        };
+
+        //        _dbContext.UserMasters.Add(user);
+        //        await _dbContext.SaveChangesAsync();
+        //        await transaction.CommitAsync();
+        //        return new EmailOtpResponseDto
+        //        {
+        //            Email = emailOtp.Email,
+        //            OTP = emailOtp.OTP
+        //        };
+        //    }
+        //    catch
+        //    {
+        //        await transaction.RollbackAsync();
+        //        throw;
+        //    }
+        //}
     }
 }
-}
+

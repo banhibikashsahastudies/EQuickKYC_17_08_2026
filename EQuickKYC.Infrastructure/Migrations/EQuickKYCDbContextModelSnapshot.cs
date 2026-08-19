@@ -22,6 +22,9 @@ namespace EQuickKYC.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("PanApplicationSeq")
+                .StartsAt(50000L);
+
             modelBuilder.Entity("EQuickKYC.Domain.Entities.Address", b =>
                 {
                     b.Property<Guid>("AddressId")
@@ -179,6 +182,47 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MobileOTPs");
+                });
+
+            modelBuilder.Entity("EQuickKYC.Domain.Entities.RegistrationMaster", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("ApplicationNumber")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR PanApplicationSeq");
+
+                    b.Property<string>("ApplicationPrefix")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateOnly?>("DOB")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PanNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserMasterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RegistrationMasters");
                 });
 
             modelBuilder.Entity("EQuickKYC.Domain.Entities.User", b =>

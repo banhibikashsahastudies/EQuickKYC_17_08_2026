@@ -11,30 +11,30 @@ namespace EQuickKYC.Application.Service
         {
             _emailOTPService = emailOTPService;
         }
-        public async Task<Result<bool>> SendEmailOTP(EmailOTPRequestDto emailRequestdto)
+        public async Task<Result<EmailOtpResponseDto>> SendEmailOTP(EmailOTPRequestDto emailRequestdto)
         {
             if (string.IsNullOrEmpty(emailRequestdto.Email))
             {
-                return Result<bool>.Fail("Email is required.");
+                return Result<EmailOtpResponseDto>.Fail("Email is required.");
             }
             var result = await _emailOTPService.SendEmailOTPAsync(emailRequestdto.Email);
 
-            if (!result) return Result<bool>.Fail("Email OTP already verified.");
+            if (result == null) return Result<EmailOtpResponseDto>.Fail("Email already verified.");
 
-            return Result<bool>.Ok(true, "Email OTP sent successfully.");
+            return Result<EmailOtpResponseDto>.Ok(result, "Email OTP sent successfully.");
         }
-        public async Task<Result<bool>> VerifyEmailOTP(EmailOTPVerifyRequest emailVerifyDto)
+        public async Task<Result<EmailOtpResponseDto>> VerifyEmailOTP(EmailOTPVerifyRequest emailVerifyDto)
         {
             if (!string.IsNullOrEmpty(emailVerifyDto.Email) && !string.IsNullOrEmpty(emailVerifyDto.OTP))
             {
-                var result = await _emailOTPService.VerifyEmailOTPAsync(emailVerifyDto.Email, emailVerifyDto.OTP);
-                if (!result)
+                var result = await _emailOTPService.VerifyEmailOTPAsync(emailVerifyDto.Email, emailVerifyDto.OTP, emailVerifyDto.UserMasterId);
+                if (result == null)
                 {
-                    return Result<bool>.Fail("Email already verified.");
+                    return Result<EmailOtpResponseDto>.Fail("Email already verified.");
                 }
-                return Result<bool>.Ok(true, "Email OTP verified successfully.");
+                return Result<EmailOtpResponseDto>.Ok(result, "Email OTP verified successfully.");
             }
-            return Result<bool>.Fail("Invalid email or OTP.");
+            return Result<EmailOtpResponseDto>.Fail("Invalid email or OTP.");
         }
     }
 }

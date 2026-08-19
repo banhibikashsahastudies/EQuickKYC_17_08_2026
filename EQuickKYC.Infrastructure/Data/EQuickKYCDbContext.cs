@@ -10,6 +10,7 @@ namespace EQuickKYC.Infrastructure.Data
         public DbSet<UserMaster> UserMasters { get; set; }
         public DbSet<MobileOTP> MobileOTPs { get; set; }
         public DbSet<EmailOTP> EmailOTPs { get; set; }
+        public DbSet<RegistrationMaster> RegistrationMasters { get; set; }
 
         public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
         {
@@ -140,6 +141,16 @@ namespace EQuickKYC.Infrastructure.Data
                 .WithOne()
                 .HasForeignKey<User>(x => x.CardId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.HasSequence<int>("PanApplicationSeq")
+           .StartsAt(50000)
+           .IncrementsBy(1);
+
+            // Place 2 - Use it
+            modelBuilder.Entity<RegistrationMaster>()
+                .Property(p => p.ApplicationNumber)
+                .HasDefaultValueSql("NEXT VALUE FOR PanApplicationSeq"); // ← same name
+
         }
     }
 }

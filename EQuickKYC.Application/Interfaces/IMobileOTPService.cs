@@ -1,8 +1,10 @@
-﻿namespace EQuickKYC.Application.Interfaces
+﻿using EQuickKYC.Application.DTOs.Mobile;
+
+namespace EQuickKYC.Application.Interfaces
 {
     public interface IMobileOTPService
     {
-        Task<bool> SendMobileOTPAsync(string mobile);
-        Task<bool> VerifyMobileOTPAsync(string mobile, string otp);
+        Task<MobileOtpResponseDto> SendMobileOTPAsync(string mobile);
+        Task<RegistrationResponseDto> VerifyMobileOTPAsync(string mobile, string otp);
     }
 }
