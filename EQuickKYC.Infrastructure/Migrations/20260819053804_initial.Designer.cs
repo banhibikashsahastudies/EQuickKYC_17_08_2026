@@ -4,6 +4,7 @@ using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    partial class EQuickKYCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819053804_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,14 +150,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("HashEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("HashOTP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OTP")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -180,15 +175,7 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MobileHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OTP")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OTPHash")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -225,9 +212,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PanNo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PanNoHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -338,10 +322,6 @@ namespace EQuickKYC.Infrastructure.Migrations
 
                     b.Property<DateTime?>("EmailVerifiedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Flag")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");

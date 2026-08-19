@@ -1,6 +1,6 @@
-﻿namespace EQuickKYC.Domain.Entities
+﻿namespace EQuickKYC.Application.DTOs.Address
 {
-    public class Address
+    public record AddressResponseDto
     {
         public Guid? AddressId { get; set; }
         public string? Country { get; set; }

@@ -4,6 +4,7 @@ using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    partial class EQuickKYCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819063944_addingMobileEmailOtpHashIncluded")]
+    partial class addingMobileEmailOtpHashIncluded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,9 +230,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.Property<string>("PanNo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PanNoHash")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -338,10 +338,6 @@ namespace EQuickKYC.Infrastructure.Migrations
 
                     b.Property<DateTime?>("EmailVerifiedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Flag")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsEmailVerified")
                         .HasColumnType("bit");

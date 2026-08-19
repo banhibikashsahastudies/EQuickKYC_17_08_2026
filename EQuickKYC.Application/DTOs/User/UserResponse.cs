@@ -1,7 +1,4 @@
 ﻿using EQuickKYC.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EQuickKYC.Application.DTOs.User
 {
@@ -14,7 +11,7 @@ namespace EQuickKYC.Application.DTOs.User
         public DateTime Dob { get; set; }
         public string Gender { get; set; }
         public Guid? AddressId { get; set; }
-        public Address? Address { get; set; }
+        //public Address? Address { get; set; }
         public Guid CardId { get; set; }
         public Card Card { get; set; }
         public string Mobile { get; set; }

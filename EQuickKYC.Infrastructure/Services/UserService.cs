@@ -8,6 +8,7 @@ namespace EQuickKYC.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly EQuickKYCDbContext _dbContext;
+
         public UserService(EQuickKYCDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -30,14 +31,14 @@ namespace EQuickKYC.Infrastructure.Services
 
                 CreatedOn = DateTime.UtcNow,
 
-                Address = request.Address
+                //Address = request.Address
             };
 
-            if (request.Address != null)
-            {
-                request.Address.AddressId = Guid.NewGuid();
-                user.AddressId = request.Address.AddressId;
-            }
+            //if (request.Address != null)
+            //{
+            //    request.Address.AddressId = Guid.NewGuid();
+            //    user.AddressId = request.Address.AddressId;
+            //}
 
             _dbContext.Users.Add(user);
 
@@ -45,20 +46,20 @@ namespace EQuickKYC.Infrastructure.Services
             int success = await _dbContext.SaveChangesAsync();
 
             //atleast one row saved
-            if(success>=1)
-            return new UserResponse
-            {
-                Id = user.Id,
-                FirstName = user.FirstName,
-                MiddleName = user.MiddleName,
-                LastName = user.LastName,
-                Dob = user.Dob,
-                Gender = user.Gender,
-                Mobile = user.Mobile,
-                Email = user.Email,
-                CreatedOn = user.CreatedOn,
-                Address = user.Address
-            };
+            if (success >= 1)
+                return new UserResponse
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    MiddleName = user.MiddleName,
+                    LastName = user.LastName,
+                    Dob = user.Dob,
+                    Gender = user.Gender,
+                    Mobile = user.Mobile,
+                    Email = user.Email,
+                    CreatedOn = user.CreatedOn,
+                    // Address = user.Address
+                };
 
             //save failed returning null
             return null;
