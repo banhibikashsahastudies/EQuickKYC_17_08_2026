@@ -11,10 +11,16 @@ namespace EQuickKYC.API.Controllers
     [ApiController]
     public class RegistrationController : ControllerBase
     {
+        #region Services
+
         private readonly MobileOTPService _mobileOTPService;
         private readonly EmailOTPServiceApplication _emailOTPService;
         private readonly PanService _panService;
 
+        #endregion
+
+
+        #region MOBILE OTP
         public RegistrationController(MobileOTPService mobileOTPService, EmailOTPServiceApplication emailOTPService, PanService panService)
         {
             _mobileOTPService = mobileOTPService;
@@ -52,6 +58,10 @@ namespace EQuickKYC.API.Controllers
             return BadRequest(result);
         }
 
+        #endregion
+
+
+        #region EMAIL OTP 
         [HttpPost("send-email-otp")]
         public async Task<IActionResult> SendEmailOTP([FromBody] EmailOTPRequestDto dto)
         {
@@ -82,7 +92,10 @@ namespace EQuickKYC.API.Controllers
             }
             return BadRequest(result);
         }
+        #endregion
 
+
+        #region PAN Verification
         [HttpPut("pan-regis")]
         public async Task<IActionResult> PanRegistration([FromBody] PanRequestDto dto, Guid UserMasterId)
         {
@@ -98,6 +111,6 @@ namespace EQuickKYC.API.Controllers
             }
             return BadRequest(result);
         }
-
+        #endregion
     }
 }
