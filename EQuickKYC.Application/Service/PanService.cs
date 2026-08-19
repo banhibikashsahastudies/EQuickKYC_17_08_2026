@@ -8,6 +8,7 @@ namespace EQuickKYC.Application.Service
     public class PanService
     {
         private readonly IPanRegistrationService _panRegistrationService;
+
         public PanService(IPanRegistrationService panRegistrationService)
         {
             _panRegistrationService = panRegistrationService;

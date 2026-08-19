@@ -30,7 +30,7 @@ namespace EQuickKYC.Application.Service
                 var result = await _emailOTPService.VerifyEmailOTPAsync(emailVerifyDto.Email, emailVerifyDto.OTP, emailVerifyDto.UserMasterId);
                 if (result == null)
                 {
-                    return Result<EmailOtpResponseDto>.Fail("Email already verified.");
+                    return Result<EmailOtpResponseDto>.Fail("Email address or OTP did not match.");
                 }
                 return Result<EmailOtpResponseDto>.Ok(result, "Email OTP verified successfully.");
             }

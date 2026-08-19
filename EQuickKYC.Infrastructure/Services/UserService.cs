@@ -8,6 +8,7 @@ namespace EQuickKYC.Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly EQuickKYCDbContext _dbContext;
+
         public UserService(EQuickKYCDbContext dbContext)
         {
             _dbContext = dbContext;

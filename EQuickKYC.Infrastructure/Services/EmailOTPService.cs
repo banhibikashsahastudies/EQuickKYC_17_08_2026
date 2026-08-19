@@ -2,6 +2,7 @@
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
+using EQuickKYC.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 
 namespace EQuickKYC.Infrastructure.Services
@@ -9,16 +10,22 @@ namespace EQuickKYC.Infrastructure.Services
     public class EmailOTPService : IEmailOTPService
     {
         private readonly EQuickKYCDbContext _dbContext;
+        private readonly IEncryptionService _encryptionService;
+        private readonly IHashService _hashService;
 
-        public EmailOTPService(EQuickKYCDbContext dbContext)
+        public EmailOTPService(EQuickKYCDbContext dbContext, IEncryptionService encryptionService, IHashService hashService)
         {
             _dbContext = dbContext;
+            _encryptionService = encryptionService;
+            _hashService = hashService;
         }
 
         public async Task<EmailOtpResponseDto> SendEmailOTPAsync(string email)
         {
+            var hashedEmail = _hashService.Hash(email);
+
             var isVerified = await _dbContext.EmailOTPs
-                    .Where(x => x.Email == email)
+                    .Where(x => x.HashEmail == hashedEmail)
                     .FirstOrDefaultAsync();
 
             if (isVerified?.VerifiedAt != null)
@@ -32,30 +39,35 @@ namespace EQuickKYC.Infrastructure.Services
             var emailOtp = new EmailOTP
             {
                 Id = Guid.NewGuid(),
-                Email = email,
-                OTP = otp,
+                Email = _encryptionService.Encrypt(email),
+                HashEmail = hashedEmail,
+                OTP = _encryptionService.Encrypt(otp),
+                HashOTP = _hashService.Hash(otp),
                 CreatedAt = DateTime.UtcNow
             };
 
             _dbContext.EmailOTPs.Add(emailOtp);
             await _dbContext.SaveChangesAsync();
+
             return new EmailOtpResponseDto
             {
-                Email = emailOtp.Email,
-                OTP = emailOtp.OTP
+                Email = _encryptionService.Decrypt(emailOtp.Email),
+                OTP = _encryptionService.Decrypt(emailOtp.OTP)
             };
         }
 
         public async Task<EmailOtpResponseDto> VerifyEmailOTPAsync(string email, string otp, Guid userMasterId)
         {
-            await using var transaction =
-                await _dbContext.Database.BeginTransactionAsync();
+            var hashedEmail = _hashService.Hash(email);
+            var hashedOTP = _hashService.Hash(otp);
+
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
             {
                 // Find the latest OTP for this email
                 var emailOtp = await _dbContext.EmailOTPs
-                    .Where(x => x.Email == email && x.OTP == otp)
+                    .Where(x => x.HashEmail == hashedEmail && x.HashOTP == hashedOTP)
                     .OrderByDescending(x => x.CreatedAt)
                     .FirstOrDefaultAsync();
 
@@ -65,7 +77,7 @@ namespace EQuickKYC.Infrastructure.Services
                 }
 
                 // Check OTP
-                if (emailOtp.OTP.ToString() != otp)
+                if (emailOtp.HashOTP.ToString() != hashedOTP)
                 {
                     return null;
                 }
@@ -85,10 +97,10 @@ namespace EQuickKYC.Infrastructure.Services
                     return null;
                 }
 
-                // Verify the email OTP
+
                 emailOtp.VerifiedAt = DateTime.UtcNow;
 
-                // Update existing UserMaster
+
                 user.EmailOTPId = emailOtp.Id;
                 user.IsEmailVerified = true;
                 user.EmailVerifiedAt = DateTime.UtcNow;
@@ -102,8 +114,8 @@ namespace EQuickKYC.Infrastructure.Services
 
                 return new EmailOtpResponseDto
                 {
-                    Email = emailOtp.Email,
-                    OTP = emailOtp.OTP
+                    Email = _encryptionService.Decrypt(emailOtp.Email),
+                    OTP = _encryptionService.Decrypt(emailOtp.OTP)
                 };
             }
             catch
@@ -112,49 +124,6 @@ namespace EQuickKYC.Infrastructure.Services
                 throw;
             }
         }
-
-        //public async Task<EmailOtpResponseDto> VerifyEmailOTPAsync(string email, string otp, Guid userMasterId)
-        //{
-        //    await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-        //    try
-        //    {
-        //        var emailOtp = await _dbContext.EmailOTPs
-        //            .Where(x => x.Email == email && x.OTP == otp)
-        //            .OrderByDescending(x => x.CreatedAt)
-        //            .FirstOrDefaultAsync();
-
-        //        if (emailOtp == null)
-        //        {
-        //            return null;
-        //        }
-        //        if (emailOtp.OTP.ToString() != otp) return null;
-
-        //        if (emailOtp.VerifiedAt != null) return null;
-        //        emailOtp.VerifiedAt = DateTime.UtcNow;
-
-        //        var user = new UserMaster
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            EmailOTPId = emailOtp.Id,
-        //            IsEmailVerified = true,
-        //            EmailVerifiedAt = DateTime.UtcNow,
-        //        };
-
-        //        _dbContext.UserMasters.Add(user);
-        //        await _dbContext.SaveChangesAsync();
-        //        await transaction.CommitAsync();
-        //        return new EmailOtpResponseDto
-        //        {
-        //            Email = emailOtp.Email,
-        //            OTP = emailOtp.OTP
-        //        };
-        //    }
-        //    catch
-        //    {
-        //        await transaction.RollbackAsync();
-        //        throw;
-        //    }
-        //}
     }
 }
 

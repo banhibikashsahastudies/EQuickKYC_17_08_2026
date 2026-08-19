@@ -8,6 +8,7 @@ namespace EQuickKYC.Domain.Entities
         public Guid UserMasterId { get; set; }
         public string? Name { get; set; }
         public string? PanNo { get; set; }
+        public string? PanNoHash { get; set; }
         public DateOnly? DOB { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
