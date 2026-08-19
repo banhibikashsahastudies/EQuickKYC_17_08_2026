@@ -33,7 +33,7 @@ namespace EQuickKYC.Application.Service
 
                 if (result == null)
                 {
-                    return Result<RegistrationResponseDto>.Fail("Already verified.");
+                    return Result<RegistrationResponseDto>.Fail("Mobile number or OTP did not match.");
                 }
                 return Result<RegistrationResponseDto>.Ok(result, "Mobile OTP verified successfully.");
             }

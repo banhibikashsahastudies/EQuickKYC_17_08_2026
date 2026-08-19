@@ -51,6 +51,7 @@ builder.Services.AddScoped<PanService>();
 
 //Security
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
+builder.Services.AddScoped<IHashService, HashService>();
 
 var app = builder.Build();
 
