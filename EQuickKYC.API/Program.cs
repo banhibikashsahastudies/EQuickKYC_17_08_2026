@@ -1,3 +1,5 @@
+using eKyc.API.Middleware;
+using EQuickKYC.API.Middleware;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
 using EQuickKYC.Infrastructure.Data;
@@ -53,6 +55,10 @@ builder.Services.AddScoped<PanService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IHashService, HashService>();
 
+// API Error Log service
+builder.Services.AddScoped<IApiErrorLogService, ApiErrorLogService>();
+builder.Services.AddScoped<ClientAdminService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -63,6 +69,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseAuthorization();
 
