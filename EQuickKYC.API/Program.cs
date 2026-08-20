@@ -1,3 +1,5 @@
+using eKyc.API.Middleware;
+using EQuickKYC.API.Middleware;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
 using EQuickKYC.Infrastructure.Data;
@@ -53,16 +55,30 @@ builder.Services.AddScoped<PanService>();
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddScoped<IHashService, HashService>();
 
+// API Error Log service
+builder.Services.AddScoped<IApiErrorLogService, ApiErrorLogService>();
+builder.Services.AddScoped<ClientAdminService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // Keeps the internal JSON definition mapped correctly
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
+        options.RoutePrefix = "cazaayan-api-docs";
+    });
 }
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseAuthorization();
 
