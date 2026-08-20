@@ -65,7 +65,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // Keeps the internal JSON definition mapped correctly
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
+        options.RoutePrefix = "cazaayan-api-docs";
+    });
 }
 
 app.UseHttpsRedirection();
