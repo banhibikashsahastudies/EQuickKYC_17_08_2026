@@ -62,14 +62,14 @@ namespace EQuickKYC.Infrastructure.Services
                      Country = u.Address.Country,
                      ZipCode = u.Address.ZipCode,
                  }
-            }).ToListAsync();
+            }).Where(b=>b.Status == true).ToListAsync();
 
             return bankDetails;
         }
 
         public async Task<Bank?> GetBankById(Guid? BankId)
         {
-            Bank? bank = await _dbContext.Banks.Where(b=>b.Id == BankId).Include(b=>b.Address).FirstOrDefaultAsync();
+            Bank? bank = await _dbContext.Banks.Where(b=>b.Id == BankId).Where(b=>b.Status == true).Include(b=>b.Address).FirstOrDefaultAsync();
             return bank;
         }
     }
