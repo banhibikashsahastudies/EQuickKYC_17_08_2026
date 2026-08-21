@@ -4,6 +4,7 @@ using EQuickKYC.API.Middleware;
 using EQuickKYC.Application.ExcelUpload;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
+using EQuickKYC.Application.SignalRInterface;
 using EQuickKYC.Infrastructure.Data;
 using EQuickKYC.Infrastructure.ExcelUploadService;
 using EQuickKYC.Infrastructure.Security;
@@ -81,6 +82,9 @@ builder.Services.AddScoped<ClientAdminService>();
 
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
 builder.Services.AddScoped<ExcelUploadService>();
+// SignalR Service
+builder.Services.AddScoped<IImportProgressNotifier, SignalRImportProgressNotifier>();
+
 
 var app = builder.Build();
 

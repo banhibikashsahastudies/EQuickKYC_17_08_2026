@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using EQuickKYC.Application.DTOs.Bank;
 using EQuickKYC.Application.ExcelUpload;
+using EQuickKYC.Application.SignalRInterface;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
 using ExcelDataReader;
@@ -15,9 +16,11 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
     public class ExcelImportService : IExcelImportService
     {
         private readonly EQuickKYCDbContext _dbContext;
-        public ExcelImportService(EQuickKYCDbContext dbContext)
+        private readonly IImportProgressNotifier _progressNotifier;
+        public ExcelImportService(EQuickKYCDbContext dbContext, IImportProgressNotifier progressNotifier)
         {
             _dbContext = dbContext;
+            _progressNotifier = progressNotifier;
         }
 
         public async Task<BankUploadResponseDto> ImportSalesAsync(Stream fileStream, string extension, CancellationToken cancellationToken = default)
@@ -154,6 +157,8 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
 
             int totalRows = records.Count + failedRows;
 
+            await SendProgressAsync(totalRows, 0, failedRows, stopwatch, "Preparing", cancellationToken);
+
             Console.WriteLine($"Total rows: {totalRows:N0}");
             Console.WriteLine($"Valid rows: {records.Count:N0}");
             Console.WriteLine($"Failed rows: {failedRows:N0}");
@@ -177,13 +182,7 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
 
             foreach (var record in records)
             {
-                table.Rows.Add(
-                    record.Region,
-                    record.Country,
-                    record.ItemType,
-                    record.SalesChannel,
-                    record.OrderPriority,
-                    record.OrderDate,
+                table.Rows.Add(record.Region, record.Country, record.ItemType, record.SalesChannel, record.OrderPriority, record.OrderDate,
                     record.OrderId,
                     record.ShipDate,
                     record.UnitsSold,
@@ -205,8 +204,9 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
 
             bulkCopy.SqlRowsCopied += (sender, e) =>
             {
-                Console.WriteLine(
-                    $"Saved: {e.RowsCopied:N0} / {totalRows:N0}");
+                _ = SendProgressAsync(totalRows, e.RowsCopied, failedRows, stopwatch, "Processing", cancellationToken);
+
+                Console.WriteLine($"Saved: {e.RowsCopied:N0} / {totalRows:N0}");
             };
 
             bulkCopy.ColumnMappings.Add("Region", "Region");
@@ -240,6 +240,8 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
 
             stopwatch.Stop();
 
+            await SendProgressAsync(totalRows, records.Count, failedRows, stopwatch, "Completed", cancellationToken);
+
             return new BankUploadResponseDto
             {
                 TotalRows = totalRows,
@@ -256,6 +258,25 @@ namespace EQuickKYC.Infrastructure.ExcelUploadService
             Console.WriteLine("----------------------------------");
         }
 
+
+        private async Task SendProgressAsync(int totalRows, long savedRows, int failedRows, Stopwatch stopwatch, string status, CancellationToken cancellationToken)
+        {
+            var percentage = totalRows == 0
+                ? 0
+                : (double)savedRows / totalRows * 100;
+
+            var progress = new ExcelUploadRealTimeDto
+            {
+                TotalRows = totalRows,
+                SavedRows = (int)savedRows,
+                FailedRows = failedRows,
+                Percentage = Math.Round(percentage, 2),
+                ElapsedTime = stopwatch.Elapsed.ToString(@"hh\:mm\:ss"),
+                Status = status
+            };
+
+            await _progressNotifier.SendProgressAsync(progress, cancellationToken);
+        }
 
         //private async Task ImportCsvAsync(Stream fileStream, SqlConnection connection, CancellationToken cancellationToken)
         //{
