@@ -91,8 +91,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
-
 app.UseHttpsRedirection();
+app.UseHsts();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 

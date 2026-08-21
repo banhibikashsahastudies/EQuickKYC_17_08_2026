@@ -10,6 +10,7 @@
         public string MICRCode { get; set; }
         public string? Url { get; set; }
         public Guid? AddressId { get; set; }
+
         //public Address? Address { get; set; }
         public bool Status { get; set; }
     }

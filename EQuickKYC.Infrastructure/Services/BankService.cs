@@ -48,5 +48,7 @@ namespace EQuickKYC.Infrastructure.Services
 
             return bankDetails;
         }
+
+
     }
 }

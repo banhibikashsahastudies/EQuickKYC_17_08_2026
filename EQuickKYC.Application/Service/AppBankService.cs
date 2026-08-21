@@ -24,7 +24,7 @@ namespace EQuickKYC.Application.Service
             {
                 return new Result<List<BankResponseDto>>();
             }
-            return new Result<List<BankResponseDto>>();
+            return new Result<List<BankResponseDto>>() { Data = response};
         }
 
         public async Task<Result<Guid>> AddBank(AddBankRequestDto request)
@@ -37,6 +37,7 @@ namespace EQuickKYC.Application.Service
                     State = request.Address?.State,
                     City = request.Address?.City,
                     ZipCode = request.Address?.ZipCode,
+                    Country = request.Address?.Country
                 };
 
                 var bank = new Bank
@@ -44,11 +45,14 @@ namespace EQuickKYC.Application.Service
                     Id = Guid.NewGuid(),
                     BankName = request.BankName,
                     BranchCode = request.BranchCode,
+                    BranchName = request.BranchName,
                     IFSCCode = request.IFSCCode,
                     MICRCode = request.MICRCode,
                     Status = true,
                     CreatedAt = DateTime.UtcNow,
                     CreatedBy = "Admin",
+                    Address = address,
+                    Url = request.Url??"DemoURL"
                 };
 
                 if (bank == null)
@@ -56,7 +60,15 @@ namespace EQuickKYC.Application.Service
                     return Result<Guid>.Fail(bank!.BankName, "Bank name can not be blank.");
 
                 }
-                int result = await _bankService.AddBankAsync(bank);
+                try
+                {
+                    int result = await _bankService.AddBankAsync(bank);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.ReadLine();
+                }
 
                 return Result<Guid>.Ok("A new bank details successfully added.");
             }
