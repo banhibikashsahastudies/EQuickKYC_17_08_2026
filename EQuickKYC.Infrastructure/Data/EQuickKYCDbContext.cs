@@ -12,6 +12,7 @@ namespace EQuickKYC.Infrastructure.Data
         public DbSet<EmailOTP> EmailOTPs { get; set; }
         public DbSet<RegistrationMaster> RegistrationMasters { get; set; }
         public DbSet<ApiErrorLog> ApiErrorLogs { get; set; }
+        public DbSet<SalesDataDemo> SalesRecords { get; set; }
 
         public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
         {
