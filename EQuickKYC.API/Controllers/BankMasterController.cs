@@ -48,5 +48,14 @@ namespace EQuickKYC.API.Controllers
 
             return Ok(result);
         }
+        [HttpPut("[action]")]
+        public async Task<ActionResult> UpdateBank(UpdateBankRequest updateBankRequest)
+        { 
+            if(updateBankRequest == null || updateBankRequest.Id == Guid.Empty) return BadRequest("Update request or Bank id null or empty");
+
+            var result = await _bankService.UpdateBank(updateBankRequest);
+
+            return Ok(result);
+        }
     }
 }

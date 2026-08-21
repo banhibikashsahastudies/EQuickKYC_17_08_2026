@@ -72,5 +72,12 @@ namespace EQuickKYC.Infrastructure.Services
             Bank? bank = await _dbContext.Banks.Where(b=>b.Id == BankId).Where(b=>b.Status == true).Include(b=>b.Address).FirstOrDefaultAsync();
             return bank;
         }
+
+        public async Task<Bank> UpdateBankAsync(Bank bank)
+        {
+           _dbContext.Banks.Update(bank);
+            await _dbContext.SaveChangesAsync();
+            return bank;
+        }
     }
 }

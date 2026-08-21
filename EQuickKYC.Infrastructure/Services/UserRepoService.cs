@@ -89,10 +89,7 @@ namespace EQuickKYC.Infrastructure.Services
             _dbContext.Users.Update(user);
             int row = await _dbContext.SaveChangesAsync();
 
-            if(row>=1)
             return user;
-
-            return null;
         }
     }
 }

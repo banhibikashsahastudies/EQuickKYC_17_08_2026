@@ -131,5 +131,38 @@ namespace EQuickKYC.Application.Service
 
             return Result<BankResponseDto>.Ok(response, "Bank found");
         }
+
+        public async Task<Result<BankResponseDto>> UpdateBank(UpdateBankRequest updateBankRequest)
+        {
+            Bank? bank = await _bankService.GetBankById(updateBankRequest.Id);
+
+            if (bank == null) return Result<BankResponseDto>.Fail("Bank with this id does not exist");
+
+            bank.BankName = updateBankRequest.BankName;
+            bank.BranchName = updateBankRequest.BranchName;
+            bank.IFSCCode = updateBankRequest.IFSCCode;
+            bank.MICRCode = updateBankRequest.MICRCode;
+            bank.Status = updateBankRequest.Status;
+            bank.UpdatedAt = DateTime.UtcNow;
+            bank.UpdatedBy = updateBankRequest.UpdatedBy;
+            bank.BranchCode = updateBankRequest.BranchCode ?? bank.BranchCode;
+            bank.Url = updateBankRequest.Url ?? bank.Url;
+
+            await _bankService.UpdateBankAsync(bank);
+
+            var response = new BankResponseDto
+            {
+                Id = bank.Id,
+                BankName = bank.BankName,
+                BranchName = bank.BranchName,
+                BranchCode = bank.BranchCode,
+                IFSCCode = bank.IFSCCode,
+                MICRCode = bank.MICRCode,
+                Url = bank.Url,
+                Status = bank.Status
+            };
+
+            return Result<BankResponseDto>.Ok(response, "Bank details updated successfully.");
+        }
     }
 }

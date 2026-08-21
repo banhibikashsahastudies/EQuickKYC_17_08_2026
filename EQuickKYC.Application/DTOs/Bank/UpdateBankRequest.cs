@@ -1,6 +1,8 @@
-﻿namespace EQuickKYC.Application.DTOs.Bank
+﻿using EQuickKYC.Application.DTOs.AddressDTO;
+
+namespace EQuickKYC.Application.DTOs.Bank
 {
-    public record UpdateBankRequestDto
+    public class UpdateBankRequest
     {
         public Guid Id { get; set; }
         public string BankName { get; set; }
@@ -10,8 +12,8 @@
         public string MICRCode { get; set; }
         public string? Url { get; set; }
         public Guid? AddressId { get; set; }
-
-        //public Address? Address { get; set; }
+        public AddressRequestDto? Address { get; set; }
         public bool Status { get; set; }
+        public string? UpdatedBy { get; set; }
     }
 }
