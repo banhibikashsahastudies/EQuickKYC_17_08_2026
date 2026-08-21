@@ -41,7 +41,7 @@ namespace EQuickKYC.API.Controllers
             var bank = await _bankService.GetBankById(bankId);
             return Ok(bank);
         }
-        [HttpDelete("[action]")]
+        [HttpPatch("[action]")]
         public async Task<ActionResult> DeleteBank(DeleteBankDto deleteBankDto)
         {
             var result = await _bankService.DeleteBank(deleteBankDto);
