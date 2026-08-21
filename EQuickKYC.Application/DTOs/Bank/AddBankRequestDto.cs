@@ -1,4 +1,4 @@
-﻿using EQuickKYC.Application.DTOs.Address;
+﻿using EQuickKYC.Application.DTOs.AddressDTO;
 
 namespace EQuickKYC.Application.DTOs.Bank
 {

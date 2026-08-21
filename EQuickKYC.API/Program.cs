@@ -2,6 +2,7 @@ using eKyc.API.Middleware;
 using EQuickKYC.API.Middleware;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
+using EQuickKYC.Domain.RepoContracts;
 using EQuickKYC.Infrastructure.Data;
 using EQuickKYC.Infrastructure.Security;
 using EQuickKYC.Infrastructure.Services;
@@ -18,27 +19,29 @@ builder.Services.AddSwaggerGen();
 //builder.Services.AddOpenApi();
 
 //dbcontext
-//builder.Services.AddDbContext<EQuickKYCDbContext>(options =>
-//{
-//    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-//});
-
-var connectionString =
-    builder.Configuration.GetConnectionString("DefaultConnection");
-
-//Console.WriteLine("=================================");
-//Console.WriteLine($"Connection String: {connectionString}");
-//Console.WriteLine("=================================");
-
 builder.Services.AddDbContext<EQuickKYCDbContext>(options =>
 {
-    options.UseSqlServer(connectionString);
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+//swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+//CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyMethod();
+        policy.AllowAnyHeader();
+        policy.AllowAnyOrigin();
+    });
+});
 
 //services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepoService, UserRepoService>();
 builder.Services.AddScoped<IBankService, BankService>();
 builder.Services.AddScoped<AppBankService>();
 
@@ -74,7 +77,22 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+//swagger
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+    //app.UseSwaggerUI(options =>
+    //{
+    //    // Keeps the internal JSON definition mapped correctly
+    //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
+    //    options.RoutePrefix = "cazaayan-api-docs";
+    //});
+}
+
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
+app.UseHsts();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 

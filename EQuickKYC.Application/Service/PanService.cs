@@ -41,7 +41,7 @@ namespace EQuickKYC.Application.Service
             if (panDetails == null)
             {
                 return Result<PanResponseDto>.Fail("The PAN was not found in our database.");
-                throw new ExternalApiException(externalApi: "Test PAN Provider", message: "Simulated external API failure.", statusCode: 503);
+                //throw new ExternalApiException(externalApi: "Test PAN Provider", message: "Simulated external API failure.", statusCode: 503);
             }
             return Result<PanResponseDto>.Ok(panDetails, "The PAN was found in our database.");
         }

@@ -15,8 +15,8 @@ namespace EQuickKYC.API.Controllers
             _bankService = bankService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> Get()
+        [HttpGet("[action]")]
+        public async Task<ActionResult> GetAllBanks()
         {
             var result = await _bankService.GetAllBanks();
             if (result == null)
@@ -25,8 +25,8 @@ namespace EQuickKYC.API.Controllers
             }
             return Ok(result);
         }
-        [HttpPost]
-        public async Task<ActionResult> Post(AddBankRequestDto addBank)
+        [HttpPost("[action]")]
+        public async Task<ActionResult> AddBank(AddBankRequestDto addBank)
         {
             if (addBank == null)
             {
@@ -34,6 +34,28 @@ namespace EQuickKYC.API.Controllers
             }
             var id = await _bankService.AddBank(addBank);
             return Ok(id);
+        }
+        [HttpGet("[action]")]
+        public async Task<ActionResult> GetBankByBankId(Guid? bankId)
+        {
+            var bank = await _bankService.GetBankById(bankId);
+            return Ok(bank);
+        }
+        [HttpPatch("[action]")]
+        public async Task<ActionResult> DeleteBank(DeleteBankDto deleteBankDto)
+        {
+            var result = await _bankService.DeleteBank(deleteBankDto);
+
+            return Ok(result);
+        }
+        [HttpPut("[action]")]
+        public async Task<ActionResult> UpdateBank(UpdateBankRequest updateBankRequest)
+        { 
+            if(updateBankRequest == null || updateBankRequest.Id == Guid.Empty) return BadRequest("Update request or Bank id null or empty");
+
+            var result = await _bankService.UpdateBank(updateBankRequest);
+
+            return Ok(result);
         }
     }
 }

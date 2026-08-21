@@ -6,12 +6,17 @@ namespace EQuickKYC.Infrastructure.Data
     public class EQuickKYCDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Card> Cards { get; set; }
+
         public DbSet<Bank> Banks { get; set; }
         public DbSet<UserMaster> UserMasters { get; set; }
         public DbSet<MobileOTP> MobileOTPs { get; set; }
         public DbSet<EmailOTP> EmailOTPs { get; set; }
         public DbSet<RegistrationMaster> RegistrationMasters { get; set; }
         public DbSet<ApiErrorLog> ApiErrorLogs { get; set; }
+
 
         public EQuickKYCDbContext(DbContextOptions<EQuickKYCDbContext> options) : base(options)
         {
@@ -24,6 +29,7 @@ namespace EQuickKYC.Infrastructure.Data
             // =========================
             // User
             // =========================
+
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("Users");
@@ -32,12 +38,6 @@ namespace EQuickKYC.Infrastructure.Data
 
                 entity.Property(x => x.Id)
                     .ValueGeneratedOnAdd();
-
-                entity.HasIndex(x => x.Mobile)
-                .IsUnique();
-
-                entity.HasIndex(x => x.Email)
-                    .IsUnique();
 
                 entity.Property(x => x.FirstName)
                     .IsRequired()
@@ -75,11 +75,34 @@ namespace EQuickKYC.Infrastructure.Data
 
                 entity.Property(x => x.UpdatedBy)
                     .IsRequired(false);
+
+                entity.Property(x => x.IsDeleted)
+                    .IsRequired();
+
+                entity.Property(x => x.status)
+                    .IsRequired();
+
+                // Mobile must be unique
+                entity.HasIndex(x => x.Mobile)
+                    .IsUnique();
+
+                // Email must be unique
+                entity.HasIndex(x => x.Email)
+                    .IsUnique();
+
+                // AddressId must be unique because User -> Address is one-to-one
+                entity.HasIndex(x => x.AddressId)
+                    .IsUnique();
+
+                // CardId must be unique because User -> Card is one-to-one
+                entity.HasIndex(x => x.CardId)
+                    .IsUnique();
             });
 
             // =========================
             // Address
             // =========================
+
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("Addresses");
@@ -102,6 +125,7 @@ namespace EQuickKYC.Infrastructure.Data
             // =========================
             // Card
             // =========================
+
             modelBuilder.Entity<Card>(entity =>
             {
                 entity.ToTable("Cards");
@@ -123,24 +147,26 @@ namespace EQuickKYC.Infrastructure.Data
 
             // =========================
             // User -> Address
-            // One User has one Address
-            // Address can exist without User
+            // Required one-to-one
             // =========================
+
             modelBuilder.Entity<User>()
                 .HasOne(x => x.Address)
                 .WithOne()
                 .HasForeignKey<User>(x => x.AddressId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // =========================
             // User -> Card
-            // One User has one Card
-            // Card is required for User
+            // Required one-to-one
             // =========================
+
             modelBuilder.Entity<User>()
                 .HasOne(x => x.Card)
                 .WithOne()
                 .HasForeignKey<User>(x => x.CardId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.HasSequence<int>("PanApplicationSeq")
