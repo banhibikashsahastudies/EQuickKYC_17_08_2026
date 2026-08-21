@@ -1,4 +1,5 @@
 ﻿using EQuickKYC.Application.Common;
+using EQuickKYC.Application.DTOs.AddressDTO;
 using EQuickKYC.Application.DTOs.Bank;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
@@ -78,6 +79,57 @@ namespace EQuickKYC.Application.Service
             }
 
 
+        }
+
+        public async Task<Result<bool>> DeleteBank(DeleteBankDto deleteBankDto)
+        {
+            if (deleteBankDto == null) throw new ArgumentNullException("Delete bank request is null");
+
+            foreach (var property in typeof(DeleteBankDto).GetProperties())
+            {
+                if (property.GetValue(deleteBankDto) is null)
+                {
+                    throw new ArgumentException($"{property} is null");
+                }
+            }
+
+
+            bool result = await _bankService.DeleteBankAsync(deleteBankDto);
+
+            if (!result) return Result<bool>.Fail("Either bank does not exist with that bank id or delete operation failed");
+
+            return Result<bool>.Ok("Bank successfully deleted.");
+        }
+
+        public async Task<Result<BankResponseDto>> GetBankById(Guid? BankId)
+        {
+            if (BankId == null) return Result<BankResponseDto>.Fail("Bank Id sent is null");
+
+            var bank = await _bankService.GetBankById(BankId.Value);
+
+            if (bank == null) return Result<BankResponseDto>.Fail("No Bank with that Bank Id exists");
+
+            var response = new BankResponseDto
+            {
+                Id = bank.Id,
+                BankName = bank.BankName,
+                BranchName = bank.BranchName,
+                BranchCode = bank.BranchCode,
+                IFSCCode = bank.IFSCCode,
+                MICRCode = bank.MICRCode,
+                Url = bank.Url,
+                Status = bank.Status,
+                Address = bank.Address == null ? null : new AddressResponseDto
+                {
+                    AddressId = bank.Address.AddressId,
+                    Country = bank.Address.Country,
+                    State = bank.Address.State,
+                    City = bank.Address.City,
+                    ZipCode = bank.Address.ZipCode
+                }
+            };
+
+            return Result<BankResponseDto>.Ok(response, "Bank found");
         }
     }
 }

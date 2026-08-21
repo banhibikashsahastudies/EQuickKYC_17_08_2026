@@ -4,6 +4,7 @@ using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using EQuickKYC.Application.DTOs.AddressDTO;
+using EQuickKYC.Application.Common;
 
 namespace EQuickKYC.Infrastructure.Services
 {
@@ -20,6 +21,23 @@ namespace EQuickKYC.Infrastructure.Services
         {
             await _dbContext.Banks.AddAsync(bank);
             return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteBankAsync(DeleteBankDto deleteBankDto)
+        {
+            var bank = await _dbContext.Banks.FirstOrDefaultAsync(x => x.Id == deleteBankDto.Id);
+            
+            //bank not found
+            if(bank == null)  return false;
+
+            //bank already deleted
+            if (bank.Status == false) return true;
+            
+            //otherwise change bank status
+            bank.Status = deleteBankDto.Status;
+            await _dbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public Task<List<BankResponseDto>> GetAllBankAsync()
@@ -49,6 +67,10 @@ namespace EQuickKYC.Infrastructure.Services
             return bankDetails;
         }
 
-
+        public async Task<Bank?> GetBankById(Guid? BankId)
+        {
+            Bank? bank = await _dbContext.Banks.Where(b=>b.Id == BankId).Include(b=>b.Address).FirstOrDefaultAsync();
+            return bank;
+        }
     }
 }
