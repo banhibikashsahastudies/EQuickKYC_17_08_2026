@@ -1,3 +1,5 @@
+using eKyc.API.Middleware;
+using EQuickKYC.API.Middleware;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
 using EQuickKYC.Domain.RepoContracts;
@@ -12,7 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+//builder.Services.AddOpenApi();
 
 //dbcontext
 builder.Services.AddDbContext<EQuickKYCDbContext>(options =>
@@ -63,7 +67,14 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    //app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        // Keeps the internal JSON definition mapped correctly
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "V1 Docs");
+        options.RoutePrefix = "cazaayan-api-docs";
+    });
 }
 
 //swagger
@@ -82,6 +93,10 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+app.UseMiddleware<CorrelationIdMiddleware>();
 
 app.UseAuthorization();
 

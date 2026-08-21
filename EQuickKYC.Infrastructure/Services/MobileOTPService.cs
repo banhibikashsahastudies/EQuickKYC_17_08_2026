@@ -1,4 +1,3 @@
-﻿
 using EQuickKYC.Application.DTOs.Mobile;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;

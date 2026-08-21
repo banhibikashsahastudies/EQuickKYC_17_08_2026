@@ -22,6 +22,9 @@ namespace EQuickKYC.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.HasSequence<int>("PanApplicationSeq")
+                .StartsAt(50000L);
+
             modelBuilder.Entity("EQuickKYC.Domain.Entities.Address", b =>
                 {
                     b.Property<Guid>("AddressId")
@@ -266,7 +269,8 @@ namespace EQuickKYC.Infrastructure.Migrations
 
                     b.Property<int>("ApplicationNumber")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR PanApplicationSeq");
 
                     b.Property<string>("ApplicationPrefix")
                         .IsRequired()

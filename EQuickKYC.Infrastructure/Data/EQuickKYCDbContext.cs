@@ -11,15 +11,10 @@ namespace EQuickKYC.Infrastructure.Data
         public DbSet<Card> Cards { get; set; }
 
         public DbSet<Bank> Banks { get; set; }
-
         public DbSet<UserMaster> UserMasters { get; set; }
-
-        public DbSet<RegistrationMaster> RegistrationMasters { get; set; }
-
         public DbSet<MobileOTP> MobileOTPs { get; set; }
-
         public DbSet<EmailOTP> EmailOTPs { get; set; }
-
+        public DbSet<RegistrationMaster> RegistrationMasters { get; set; }
         public DbSet<ApiErrorLog> ApiErrorLogs { get; set; }
 
 
@@ -173,6 +168,16 @@ namespace EQuickKYC.Infrastructure.Data
                 .HasForeignKey<User>(x => x.CardId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.HasSequence<int>("PanApplicationSeq")
+           .StartsAt(50000)
+           .IncrementsBy(1);
+
+            // Place 2 - Use it
+            modelBuilder.Entity<RegistrationMaster>()
+                .Property(p => p.ApplicationNumber)
+                .HasDefaultValueSql("NEXT VALUE FOR PanApplicationSeq"); // ← same name
+
         }
     }
 }

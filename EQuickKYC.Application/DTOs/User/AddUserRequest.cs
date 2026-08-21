@@ -1,4 +1,4 @@
-﻿using EQuickKYC.Application.DTOs.AddressDTO;
+using EQuickKYC.Application.DTOs.AddressDTO;
 using EQuickKYC.Application.DTOs.CardDTO;
 
 namespace EQuickKYC.Application.DTOs.User

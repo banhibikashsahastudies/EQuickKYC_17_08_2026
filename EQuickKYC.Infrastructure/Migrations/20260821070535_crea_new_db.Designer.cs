@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    [Migration("20260821060831_creatingNewTables")]
-    partial class creatingNewTables
+    [Migration("20260821070535_crea_new_db")]
+    partial class crea_new_db
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,9 @@ namespace EQuickKYC.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.HasSequence<int>("PanApplicationSeq")
+                .StartsAt(50000L);
 
             modelBuilder.Entity("EQuickKYC.Domain.Entities.Address", b =>
                 {
@@ -269,7 +272,8 @@ namespace EQuickKYC.Infrastructure.Migrations
 
                     b.Property<int>("ApplicationNumber")
                         .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("NEXT VALUE FOR PanApplicationSeq");
 
                     b.Property<string>("ApplicationPrefix")
                         .IsRequired()

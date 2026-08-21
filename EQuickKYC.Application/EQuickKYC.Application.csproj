@@ -10,4 +10,8 @@
     <ProjectReference Include="..\EQuickKYC.Domain\EQuickKYC.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTOs\UserMaster\" />
+  </ItemGroup>
+
 </Project>

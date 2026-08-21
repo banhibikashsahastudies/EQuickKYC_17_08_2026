@@ -6,11 +6,15 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class creatingNewTables : Migration
+    public partial class crea_new_db : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateSequence<int>(
+                name: "PanApplicationSeq",
+                startValue: 50000L);
+
             migrationBuilder.CreateTable(
                 name: "Addresses",
                 columns: table => new
@@ -113,7 +117,7 @@ namespace EQuickKYC.Infrastructure.Migrations
                     PanNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PanNoHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DOB = table.Column<DateOnly>(type: "date", nullable: true),
-                    ApplicationNumber = table.Column<int>(type: "int", nullable: false),
+                    ApplicationNumber = table.Column<int>(type: "int", nullable: false, defaultValueSql: "NEXT VALUE FOR PanApplicationSeq"),
                     ApplicationPrefix = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -270,6 +274,9 @@ namespace EQuickKYC.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropSequence(
+                name: "PanApplicationSeq");
         }
     }
 }
