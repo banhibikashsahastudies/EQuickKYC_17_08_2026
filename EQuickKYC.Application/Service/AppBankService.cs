@@ -164,5 +164,43 @@ namespace EQuickKYC.Application.Service
 
             return Result<BankResponseDto>.Ok(response, "Bank details updated successfully.");
         }
+
+        public async Task<Result<List<BankResponseDto>>> GetBankByParams(BankSearchDto bankSearchDto)
+        {
+            if (bankSearchDto == null) return Result<List<BankResponseDto>>.Fail("Search parameters are empty.");
+
+            IQueryable<Bank> Banks = await _bankService.GetBankByParams(bankSearchDto);
+
+            //if bank search return empty result
+            if (!Banks.Any()) return Result<List<BankResponseDto>>.Ok("No Banks found with such records.");
+
+            List<BankResponseDto> BankResponseList = Banks.Select(u => ToBankResponse(u)).ToList();
+
+            return Result<List<BankResponseDto>>.Ok(data: BankResponseList, "List of Banks successfully fetched.");
+        }
+
+        //private function to convert bank into Bank Response
+        private BankResponseDto ToBankResponse(Bank bank)
+        {
+            return  new BankResponseDto()
+            {
+                Id = bank.Id,
+                BankName = bank.BankName,
+                BranchName = bank.BranchName,
+                BranchCode = bank.BranchCode,
+                IFSCCode = bank.IFSCCode,
+                MICRCode = bank.MICRCode,
+                Url = bank.Url,
+                Status = bank.Status,
+                Address = bank.Address == null ? null : new AddressResponseDto
+                {
+                    AddressId = bank.Address.AddressId,
+                    Country = bank.Address.Country,
+                    State = bank.Address.State,
+                    City = bank.Address.City,
+                    ZipCode = bank.Address.ZipCode
+                }
+            };
+        }
     }
 }

@@ -79,5 +79,21 @@ namespace EQuickKYC.Infrastructure.Services
             await _dbContext.SaveChangesAsync();
             return bank;
         }
+
+        public async Task<IQueryable<Bank>> GetBankByParams(BankSearchDto bankSearchDto)
+        {
+            var query = _dbContext.Banks.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(bankSearchDto.Name))
+                query = query.Where(x => x.BankName.Contains(bankSearchDto.Name));
+
+            if (!string.IsNullOrWhiteSpace(bankSearchDto.IFSC))
+                query = query.Where(x => x.IFSCCode.Contains(bankSearchDto.IFSC));
+
+            if (!string.IsNullOrWhiteSpace(bankSearchDto.BranchName))
+                query = query.Where(x => x.BranchName.Contains(bankSearchDto.BranchName));
+
+            return query;
+        }
     }
 }
