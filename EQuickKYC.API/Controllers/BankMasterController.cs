@@ -34,7 +34,7 @@ namespace EQuickKYC.API.Controllers
             return Ok(bank);
         }
         [HttpGet("[action]")]
-        public async Task<ActionResult> GetBankByParams(BankSearchDto bankSearchDto)
+        public async Task<ActionResult> GetBankByParams([FromQuery]BankSearchDto bankSearchDto)
         {
             var response = await _bankService.GetBankByParams(bankSearchDto);
             return Ok(response);

@@ -169,14 +169,15 @@ namespace EQuickKYC.Application.Service
         {
             if (bankSearchDto == null) return Result<List<BankResponseDto>>.Fail("Search parameters are empty.");
 
-            IQueryable<Bank> Banks = await _bankService.GetBankByParams(bankSearchDto);
+            IQueryable<Bank> banks = await _bankService.GetBankByParams(bankSearchDto);
 
-            //if bank search return empty result
-            if (!Banks.Any()) return Result<List<BankResponseDto>>.Ok("No Banks found with such records.");
+            List<Bank> bankList = banks.ToList();
 
-            List<BankResponseDto> BankResponseList = Banks.Select(u => ToBankResponse(u)).ToList();
+            if (!bankList.Any()) return Result<List<BankResponseDto>>.Ok("No Banks found with such records.");
 
-            return Result<List<BankResponseDto>>.Ok(data: BankResponseList, "List of Banks successfully fetched.");
+            List<BankResponseDto> bankResponseList = bankList.Select(u => ToBankResponse(u)).ToList();
+
+            return Result<List<BankResponseDto>>.Ok(data: bankResponseList, "List of Banks successfully fetched.", totalCount: bankList.Count);
         }
 
         //private function to convert bank into Bank Response
