@@ -196,7 +196,7 @@ namespace EQuickKYC.Application.Service
 
             if(response.Count == 0) return Result<Dictionary<string, string>>.Fail("No branch data found associated with the bank.");
 
-            return Result<Dictionary<string, string>>.Ok(data:response,"Bank brab=nch data found", totalCount:response.Count) ;
+            return Result<Dictionary<string, string>>.Ok(data:response,"Bank branch data found", totalCount:response.Count) ;
         }
 
         //private function to convert bank into Bank Response

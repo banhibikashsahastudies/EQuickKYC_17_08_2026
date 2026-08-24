@@ -7,6 +7,7 @@ function BankSearch() {
     const [bankList, setBankList] = useState([]);
     const [ifsc, setIfsc] = useState("");
     const [branchName, setBranchName] = useState("");
+    const [branchData, setBranchData] = useState({});
 
     const [searchBankName, setSearchBankName] = useState(false);
     const [searchIfsc, setSearchIfsc] = useState(false);
@@ -32,17 +33,32 @@ function BankSearch() {
                 console.log("Bank names response:", result);
 
                 setBankList(result.data);
-                
+
             } catch (Ex) {
                 console.error(Ex.message)
-            }finally{}
+            } finally { }
         };
         setBankListName();
-    },[])
+    }, [])
 
-    const fetchBankNameData = async ()=>{
-        
-    }
+    const fetchBankNameData = async (bankName) => {
+        try {
+            const response = await fetch(`${BaseUrl}/BankMaster/GetBranchData?BankData=${encodeURIComponent(bankName)}`, {
+                method: "GET"
+            });
+
+            const result = await response.json();
+
+            console.log("Branch data:", result.data);
+
+            setBranchData(result.data || {});
+            setIfsc("");
+            setBranchName("");
+
+        } catch (Ex) {
+            console.log(Ex.message);
+        }
+    };
 
     const handleSearch = async () => {
         setError("");
@@ -192,11 +208,18 @@ function BankSearch() {
                             />
                             <select
                                 value={bankName}
-                                onChange={(e) => {setBankName(e.target.value); }}
+                                onChange={(e) => {
+                                    const selectedBank = e.target.value;
+                                    setBankName(selectedBank);
+
+                                    if (selectedBank) {
+                                        fetchBankNameData(selectedBank)
+                                    }
+                                }}
                             >
                                 <option value="">Select Bank</option>
 
-                                {bankList?.map((item,index)=>(<option value={item} key={index} >{item}</option>))}
+                                {bankList?.map((item, index) => (<option value={item} key={index} >{item}</option>))}
                             </select>
                         </div>
 
@@ -219,7 +242,6 @@ function BankSearch() {
 
                                     <span>Search by IFSC</span>
                                 </label>
-
                             </div>
 
                             <input
@@ -230,6 +252,28 @@ function BankSearch() {
                                 disabled={!searchIfsc}
                             />
 
+                            <select
+                                value={ifsc}
+                                onChange={(e) => {
+                                    const selectedIfsc = e.target.value;
+                                    setIfsc(selectedIfsc);
+
+                                    if (selectedIfsc && branchData[selectedIfsc]) {
+                                        setBranchName(branchData[selectedIfsc]);
+                                    } else {
+                                        setBranchName("");
+                                    }
+                                }}
+                                disabled={!searchIfsc || Object.keys(branchData).length === 0}
+                            >
+                                <option value="">Select IFSC</option>
+
+                                {Object.keys(branchData).map((ifscCode) => (
+                                    <option key={ifscCode} value={ifscCode}>
+                                        {ifscCode}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="bank-search-field">
@@ -253,7 +297,6 @@ function BankSearch() {
                                 </label>
 
                             </div>
-
                             <input
                                 type="text"
                                 value={branchName}
@@ -262,6 +305,30 @@ function BankSearch() {
                                 disabled={!searchBranchName}
                             />
 
+                            <select
+                                value={branchName}
+                                onChange={(e) => {
+                                    const selectedBranch = e.target.value;
+                                    setBranchName(selectedBranch);
+
+                                    const matchingIfsc = Object.keys(branchData).find(
+                                        (ifscCode) => branchData[ifscCode] === selectedBranch
+                                    );
+
+                                    if (matchingIfsc) {
+                                        setIfsc(matchingIfsc);
+                                    }
+                                }}
+                                disabled={!searchBranchName || Object.keys(branchData).length === 0}
+                            >
+                                <option value="">Select Branch</option>
+
+                                {[...new Set(Object.values(branchData))].map((branch, index) => (
+                                    <option key={index} value={branch}>
+                                        {branch}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
 
                         <div className="upload-actions">
