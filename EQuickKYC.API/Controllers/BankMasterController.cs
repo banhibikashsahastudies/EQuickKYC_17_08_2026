@@ -27,6 +27,18 @@ namespace EQuickKYC.API.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("[action]")]
+        public async Task<ActionResult> GetBankByBankId(Guid? bankId)
+        {
+            var bank = await _bankService.GetBankById(bankId);
+            return Ok(bank);
+        }
+        [HttpGet("[action]")]
+        public async Task<ActionResult> GetBankByParams(BankSearchDto bankSearchDto)
+        {
+            var response = await _bankService.GetBankByParams(bankSearchDto);
+            return Ok(response);
+        }
         [HttpPost("[action]")]
         public async Task<ActionResult> AddBank(AddBankRequestDto addBank)
         {
@@ -36,12 +48,6 @@ namespace EQuickKYC.API.Controllers
             }
             var id = await _bankService.AddBank(addBank);
             return Ok(id);
-        }
-        [HttpGet("[action]")]
-        public async Task<ActionResult> GetBankByBankId(Guid? bankId)
-        {
-            var bank = await _bankService.GetBankById(bankId);
-            return Ok(bank);
         }
         [HttpPatch("[action]")]
         public async Task<ActionResult> DeleteBank(DeleteBankDto deleteBankDto)
