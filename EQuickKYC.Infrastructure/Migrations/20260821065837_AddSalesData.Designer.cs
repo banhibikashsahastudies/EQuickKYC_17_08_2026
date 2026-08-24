@@ -4,6 +4,7 @@ using EQuickKYC.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EQuickKYC.Infrastructure.Migrations
 {
     [DbContext(typeof(EQuickKYCDbContext))]
-    partial class EQuickKYCDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260821065837_AddSalesData")]
+    partial class AddSalesData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +181,6 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.Property<string>("DrivingLicenseNo")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
-
-                    b.Property<string>("Otp")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PanNo")
                         .HasMaxLength(10)
@@ -371,10 +371,10 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AddressId")
+                    b.Property<Guid?>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CardId")
+                    b.Property<Guid?>("CardId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
@@ -429,10 +429,12 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
 
                     b.HasIndex("CardId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CardId] IS NOT NULL");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -498,14 +500,12 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasOne("EQuickKYC.Domain.Entities.Address", "Address")
                         .WithOne()
                         .HasForeignKey("EQuickKYC.Domain.Entities.User", "AddressId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("EQuickKYC.Domain.Entities.Card", "Card")
                         .WithOne()
                         .HasForeignKey("EQuickKYC.Domain.Entities.User", "CardId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Address");
 

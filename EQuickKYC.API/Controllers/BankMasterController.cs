@@ -77,3 +77,4 @@ namespace EQuickKYC.API.Controllers
         }
     }
 }
+
