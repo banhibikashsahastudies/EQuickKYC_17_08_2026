@@ -2,6 +2,7 @@
 using EQuickKYC.Application.DTOs.Email;
 using EQuickKYC.Application.DTOs.Mobile;
 using EQuickKYC.Application.DTOs.Pan;
+using EQuickKYC.Application.DTOs.Register;
 using EQuickKYC.Application.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -110,6 +111,15 @@ namespace EQuickKYC.API.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+        #endregion
+
+        #region RegistrationTableDataHandle
+        [HttpPatch("[action]")]
+        public async Task<ActionResult> ChangePrefix([FromBody]ChangePrefixDTO changePrefixDTO)
+        {
+            var chnagedPrefix = await _panService.ChangePrefix(changePrefixDTO);
+            return Ok(chnagedPrefix);
         }
         #endregion
     }

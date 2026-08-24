@@ -179,6 +179,9 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<string>("Otp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PanNo")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
@@ -368,10 +371,10 @@ namespace EQuickKYC.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("AddressId")
+                    b.Property<Guid>("AddressId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CardId")
+                    b.Property<Guid>("CardId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CreatedBy")
@@ -426,12 +429,10 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
-                        .IsUnique()
-                        .HasFilter("[AddressId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("CardId")
-                        .IsUnique()
-                        .HasFilter("[CardId] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -497,12 +498,14 @@ namespace EQuickKYC.Infrastructure.Migrations
                     b.HasOne("EQuickKYC.Domain.Entities.Address", "Address")
                         .WithOne()
                         .HasForeignKey("EQuickKYC.Domain.Entities.User", "AddressId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("EQuickKYC.Domain.Entities.Card", "Card")
                         .WithOne()
                         .HasForeignKey("EQuickKYC.Domain.Entities.User", "CardId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Address");
 

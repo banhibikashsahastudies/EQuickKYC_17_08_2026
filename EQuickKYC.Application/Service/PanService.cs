@@ -1,8 +1,10 @@
 ﻿using EQuickKYC.Application.Common;
 using EQuickKYC.Application.DTOs.Pan;
+using EQuickKYC.Application.DTOs.Register;
 using EQuickKYC.Application.Exceptions;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
+using System.Security.AccessControl;
 
 namespace EQuickKYC.Application.Service
 {
@@ -41,9 +43,30 @@ namespace EQuickKYC.Application.Service
             if (panDetails == null)
             {
                 return Result<PanResponseDto>.Fail("The PAN was not found in our database.");
-                throw new ExternalApiException(externalApi: "Test PAN Provider", message: "Simulated external API failure.", statusCode: 503);
+                //throw new ExternalApiException(externalApi: "Test PAN Provider", message: "Simulated external API failure.", statusCode: 503);
             }
             return Result<PanResponseDto>.Ok(panDetails, "The PAN was found in our database.");
         }
+
+        public async Task<Result<string>> ChangePrefix(ChangePrefixDTO changePrefixDTO)
+        {
+            if (changePrefixDTO == null) return Result<string>.Fail("Prefix change dto is null, send correct request data") ;
+
+            foreach (var property in typeof(ChangePrefixDTO).GetProperties()) 
+            { 
+                if(property.GetValue(changePrefixDTO) == null)
+                {
+                    return Result<string>.Fail($"Value of {property} is null, send correct data.");
+                }
+            }
+
+            var response = await _panRegistrationService.GetUserById(changePrefixDTO.id);
+            if (response == null) return Result<string>.Fail("No user with this id exists");
+
+            response.ApplicationPrefix = changePrefixDTO.ApplicationPrefix;
+            var prefix = await _panRegistrationService.ChangePrefix(response);
+
+            return Result<string>.Ok(data:prefix,"Changed prefix successfully.", totalCount:1);
+        } 
     }
 }
