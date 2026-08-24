@@ -11,6 +11,7 @@ import ViewPanDetails from './pages/ViewPanDetails'
 import { Route, Routes } from 'react-router-dom';
 import AccountType from './pages/AccountType'
 import Admin from './pages/Admin'
+import BankSearch from './pages/bankSearch'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,6 +27,7 @@ function App() {
         <Route path="/pan_details" element={<ViewPanDetails />} />
         <Route path="/account_type" element={<AccountType />} />
         <Route path="/admin_dash" element={<Admin />} />
+        <Route path="/bank_search" element={<BankSearch />} />
       </Routes>
 
       <Footer />

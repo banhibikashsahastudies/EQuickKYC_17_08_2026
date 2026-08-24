@@ -402,3 +402,100 @@
         padding: 16px;
     }
 }
+
+.bank-search-content {
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    align-items: end;
+}
+
+.bank-search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.search-field-header {
+    min-height: 25px;
+}
+
+.search-field-header label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #1769aa;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.search-field-header input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #3498db;
+    cursor: pointer;
+}
+
+.bank-search-field > input[type="text"] {
+    width: 100%;
+    padding: 12px 13px;
+    box-sizing: border-box;
+    border: 1px solid #b9dcf5;
+    border-radius: 6px;
+    background-color: #f8fcff;
+    color: #365f78;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bank-search-field > input[type="text"]:focus {
+    outline: none;
+    border-color: #5dade2;
+    box-shadow: 0 0 0 3px rgba(93, 173, 226, 0.15);
+}
+
+.bank-search-field > input[type="text"]:disabled {
+    background-color: #eef5f9;
+    color: #9ab0bf;
+    cursor: not-allowed;
+}
+
+.bank-search-field > input[type="text"]::placeholder {
+    color: #9ab1c0;
+}
+
+.bank-search-content .upload-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+@media (max-width: 900px) {
+    .bank-search-content {
+        grid-template-columns: 1fr;
+    }
+
+    .bank-search-content .upload-actions {
+        grid-column: auto;
+        justify-content: stretch;
+    }
+}
+
+@media (max-width: 768px) {
+    .bank-search-content {
+        padding: 20px;
+    }
+
+    .bank-search-content .upload-actions {
+        flex-direction: column;
+    }
+
+    .bank-search-content .upload-btn,
+    .bank-search-content .clear-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+

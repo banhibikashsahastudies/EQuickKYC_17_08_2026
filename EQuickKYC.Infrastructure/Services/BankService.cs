@@ -85,7 +85,7 @@ namespace EQuickKYC.Infrastructure.Services
             var query = _dbContext.Banks.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(bankSearchDto.Name))
-                query = query.Where(x => x.BankName.Contains(bankSearchDto.Name));
+                query = query.Where(x => x.BankName.Contains(bankSearchDto.Name)).Include(b=>b.Address);
 
             if (!string.IsNullOrWhiteSpace(bankSearchDto.IFSC))
                 query = query.Where(x => x.IFSCCode.Contains(bankSearchDto.IFSC));
