@@ -1,4 +1,5 @@
 ﻿using EQuickKYC.Application.DTOs.Pan;
+using EQuickKYC.Application.DTOs.Register;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Domain.Entities;
 using EQuickKYC.Infrastructure.Data;
@@ -55,6 +56,20 @@ namespace EQuickKYC.Infrastructure.Services
             await _dbContext.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<string> ChangePrefix(RegistrationMaster registrationMaster)
+        {
+            _dbContext.RegistrationMasters.Update(registrationMaster);
+            await _dbContext.SaveChangesAsync();
+
+            return registrationMaster.ApplicationPrefix;
+        }
+
+        public async Task<RegistrationMaster> GetUserById(Guid id)
+        {
+            RegistrationMaster? reg = await _dbContext.RegistrationMasters.Where(u=>u.Id == id).FirstOrDefaultAsync();
+            return reg;
         }
     }
 }

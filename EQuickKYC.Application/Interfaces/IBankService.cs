@@ -11,5 +11,6 @@ namespace EQuickKYC.Application.Interfaces
         Task<bool> DeleteBankAsync(DeleteBankDto deleteBankDto);
         Task<Bank> UpdateBankAsync(Bank bank);
         Task<IQueryable<Bank>> GetBankByParams(BankSearchDto bankSearchDto);
+        Task<List<string>> GetBankNames();
     }
 }

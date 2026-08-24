@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import BaseUrl from "../components/BaseUrl";
 import "../assets/css/banhiStyle.css";
 
 function BankSearch() {
     const [bankName, setBankName] = useState("");
+    const [bankList, setBankList] = useState([]);
     const [ifsc, setIfsc] = useState("");
     const [branchName, setBranchName] = useState("");
 
@@ -15,6 +16,33 @@ function BankSearch() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+
+    useEffect(() => {
+        const setBankListName = async () => {
+            try {
+                console.log("fetching")
+                var response = await fetch(`${BaseUrl}/BankMaster/GetAllBankNames`,
+                    {
+                        method: "GET"
+                    }
+                );
+                const result = await response.json();
+
+                console.log("Bank names response:", result);
+
+                setBankList(result.data);
+                
+            } catch (Ex) {
+                console.error(Ex.message)
+            }finally{}
+        };
+        setBankListName();
+    },[])
+
+    const fetchBankNameData = async ()=>{
+        
+    }
 
     const handleSearch = async () => {
         setError("");
@@ -162,7 +190,14 @@ function BankSearch() {
                                 placeholder="Enter Bank Name"
                                 disabled={!searchBankName}
                             />
+                            <select
+                                value={bankName}
+                                onChange={(e) => {setBankName(e.target.value); }}
+                            >
+                                <option value="">Select Bank</option>
 
+                                {bankList?.map((item,index)=>(<option value={item} key={index} >{item}</option>))}
+                            </select>
                         </div>
 
                         <div className="bank-search-field">

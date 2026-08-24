@@ -180,6 +180,13 @@ namespace EQuickKYC.Application.Service
             return Result<List<BankResponseDto>>.Ok(data: bankResponseList, "List of Banks successfully fetched.", totalCount: bankList.Count);
         }
 
+        public async Task<Result<List<string>>> GetBankName()
+        {
+            var response = await _bankService.GetBankNames();
+
+            return Result<List<string>>.Ok(data:response,"Fetched list of all bank names");
+        }
+
         //private function to convert bank into Bank Response
         private BankResponseDto ToBankResponse(Bank bank)
         {

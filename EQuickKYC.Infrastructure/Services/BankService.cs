@@ -95,5 +95,11 @@ namespace EQuickKYC.Infrastructure.Services
 
             return query;
         }
+
+        public async Task<List<string>> GetBankNames()
+        {
+            List<string> BankNames = await _dbContext.Banks.Select(b => b.BankName).Distinct().ToListAsync();
+            return BankNames;
+        }
     }
 }
