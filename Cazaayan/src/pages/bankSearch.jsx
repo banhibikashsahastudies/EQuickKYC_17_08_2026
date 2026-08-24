@@ -113,9 +113,9 @@ function BankSearch() {
 
                 <div className="admin-header">
                     <div>
-                        <h1>Bank Search</h1>
+                        <h1>Banks</h1>
                         <p>
-                            Search banks using Bank Name, IFSC, or Branch Name.
+                            Add, Search, Update or Delete Banks banks.
                         </p>
                     </div>
                 </div>

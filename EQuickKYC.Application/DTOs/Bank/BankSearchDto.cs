@@ -9,5 +9,6 @@ namespace EQuickKYC.Application.DTOs.Bank
         public string? Name { get; set;  }
         public string? IFSC { get; set; }
         public string? BranchName {  get; set; }
+        public bool? status { get; set; } = true;
     }
 }
