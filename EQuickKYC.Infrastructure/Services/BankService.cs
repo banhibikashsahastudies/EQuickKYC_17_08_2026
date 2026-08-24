@@ -101,5 +101,10 @@ namespace EQuickKYC.Infrastructure.Services
             List<string> BankNames = await _dbContext.Banks.Select(b => b.BankName).Distinct().ToListAsync();
             return BankNames;
         }
+        public async Task<Dictionary<string, string>> GetBankBranches(string bankName)
+        {
+            var query = _dbContext.Banks.AsNoTracking().Where(q=>q.BankName == bankName).AsQueryable();
+            return await query.ToDictionaryAsync(q => q.IFSCCode, q => q.BranchName);
+        }
     }
 }

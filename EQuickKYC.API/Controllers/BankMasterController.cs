@@ -49,6 +49,17 @@ namespace EQuickKYC.API.Controllers
             }
             return Ok(result);
         }
+        [HttpGet("[action]")]
+        public async Task<ActionResult> GetBranchData([FromQuery]string? BankData)
+        {
+            var result = await _bankService.GetBankData(BankData);
+            if (result == null)
+            {
+                return NoContent();
+            }
+            return Ok(result);
+        }
+
         [HttpPost("[action]")]
         public async Task<ActionResult> AddBank(AddBankRequestDto addBank)
         {

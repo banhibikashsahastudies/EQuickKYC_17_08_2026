@@ -12,5 +12,6 @@ namespace EQuickKYC.Application.Interfaces
         Task<Bank> UpdateBankAsync(Bank bank);
         Task<IQueryable<Bank>> GetBankByParams(BankSearchDto bankSearchDto);
         Task<List<string>> GetBankNames();
+        Task<Dictionary<string, string>> GetBankBranches(string bankName);
     }
 }

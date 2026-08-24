@@ -187,6 +187,18 @@ namespace EQuickKYC.Application.Service
             return Result<List<string>>.Ok(data:response,"Fetched list of all bank names");
         }
 
+        public async Task<Result<Dictionary<string,string>>> GetBankData(string? BankName)
+        {
+            //validate
+            if (BankName == null || BankName == string.Empty) return Result<Dictionary<string, string>>.Fail("Bank Name is null or empty.");
+
+            var response = await _bankService.GetBankBranches(BankName);
+
+            if(response.Count == 0) return Result<Dictionary<string, string>>.Fail("No branch data found associated with the bank.");
+
+            return Result<Dictionary<string, string>>.Ok(data:response,"Bank brab=nch data found", totalCount:response.Count) ;
+        }
+
         //private function to convert bank into Bank Response
         private BankResponseDto ToBankResponse(Bank bank)
         {
