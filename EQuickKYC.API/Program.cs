@@ -10,6 +10,7 @@ using EQuickKYC.Infrastructure.Data;
 using EQuickKYC.Infrastructure.ExcelUploadService;
 using EQuickKYC.Infrastructure.Security;
 using EQuickKYC.Infrastructure.Services;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -67,6 +68,13 @@ builder.Services.AddScoped<IHashService, HashService>();
 // API Error Log service
 builder.Services.AddScoped<IApiErrorLogService, ApiErrorLogService>();
 builder.Services.AddScoped<ClientAdminService>();
+//Excel Service
+
+builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
+builder.Services.AddScoped<ExcelUploadService>();
+// SignalR Service
+builder.Services.AddScoped<IImportProgressNotifier, SignalRImportProgressNotifier>();
+
 
 //Excel Service
 builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
