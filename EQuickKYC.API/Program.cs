@@ -1,9 +1,13 @@
 using eKyc.API.Middleware;
+using EQuickKYC.API.Hubs;
 using EQuickKYC.API.Middleware;
+using EQuickKYC.Application.ExcelUpload;
 using EQuickKYC.Application.Interfaces;
 using EQuickKYC.Application.Service;
+using EQuickKYC.Application.SignalRInterface;
 using EQuickKYC.Domain.RepoContracts;
 using EQuickKYC.Infrastructure.Data;
+using EQuickKYC.Infrastructure.ExcelUploadService;
 using EQuickKYC.Infrastructure.Security;
 using EQuickKYC.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -62,6 +68,14 @@ builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<IApiErrorLogService, ApiErrorLogService>();
 builder.Services.AddScoped<ClientAdminService>();
 
+//Excel Service
+builder.Services.AddScoped<IExcelImportService, ExcelImportService>();
+builder.Services.AddScoped<ExcelUploadService>();
+
+// SignalR Service
+builder.Services.AddScoped<IImportProgressNotifier, SignalRImportProgressNotifier>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -101,5 +115,7 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<ImportProgressHub>("/hubs/import-progress");
 
 app.Run();

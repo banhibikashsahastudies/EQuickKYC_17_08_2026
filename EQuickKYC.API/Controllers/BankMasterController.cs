@@ -9,10 +9,12 @@ namespace EQuickKYC.API.Controllers
     public class BankMasterController : ControllerBase
     {
         private readonly AppBankService _bankService;
+        private readonly ExcelUploadService _excelUploadService;
 
-        public BankMasterController(AppBankService bankService)
+        public BankMasterController(AppBankService bankService, ExcelUploadService excelUploadService)
         {
             _bankService = bankService;
+            _excelUploadService = excelUploadService;
         }
 
         [HttpGet("[action]")]
@@ -56,6 +58,22 @@ namespace EQuickKYC.API.Controllers
             var result = await _bankService.UpdateBank(updateBankRequest);
 
             return Ok(result);
+        }
+
+        [HttpPost("sales-data-excel-upload")]
+        public async Task<ActionResult> Post(IFormFile file, CancellationToken cancellationToken)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Excel file is required.");
+            }
+
+            var result = await _excelUploadService.UploadExcel(file, cancellationToken);
+
+            if (result == null) return NoContent();
+
+            return Ok(result);
+
         }
     }
 }
